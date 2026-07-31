@@ -82,34 +82,40 @@ function renderCharacterGrid() {
                 ${isCollected ? "獲得済み" : "利用できます"}
             </div>
 
-            <div class="character-actions">
-                <button
-                    class="character-action-button ar-button"
-                    type="button">
-                    ARで見る
-                </button>
+            ${isCollected ? `
+                <div class="character-actions">
+                    <button
+                        class="character-action-button ar-button"
+                        type="button">
+                        ARで見る
+                    </button>
 
-                <button
-                    class="character-action-button voice-button"
-                    type="button">
-                    音声を聞く
-                </button>
-            </div>
+                    <button
+                        class="character-action-button voice-button"
+                        type="button">
+                        音声を聞く
+                    </button>
+                </div>
+            ` : ""}
         `;
 
-        card
-            .querySelector(".ar-button")
-            .addEventListener("click", () => {
+        if (isCollected) {
+            const arButton =
+                card.querySelector(".ar-button");
+
+            arButton.addEventListener("click", () => {
                 location.href =
                     `character-ar.html?id=${character.id}`;
             });
 
-        card
-            .querySelector(".voice-button")
-            .addEventListener("click", () => {
+            const voiceButton =
+                card.querySelector(".voice-button");
+
+            voiceButton.addEventListener("click", () => {
                 location.href =
                     `character-card.html?id=${character.id}&from=character-list`;
             });
+        }
 
         characterGrid.appendChild(card);
     });
