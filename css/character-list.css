@@ -85,10 +85,6 @@ body {
     font-weight: 900;
 }
 
-.free-badge {
-    background: #2775d8;
-}
-
 .locked-badge {
     position: absolute;
     inset: 0;

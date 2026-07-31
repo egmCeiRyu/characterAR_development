@@ -35,6 +35,7 @@ body {
     width: 100%;
     max-width: 430px;
     min-height: 100vh;
+    min-height: 100dvh;
     margin: 0 auto;
 
     padding:
@@ -119,32 +120,72 @@ body {
     color: #006bff;
 }
 
-@media (max-height: 720px) {
+@media (max-height: 740px) {
     .home-page {
-        padding-top: 42vh;
+        padding:
+            32vh
+            16px
+            calc(14px + env(safe-area-inset-bottom));
+        padding:
+            32dvh
+            16px
+            calc(14px + env(safe-area-inset-bottom));
     }
 
     .home-title {
-        margin-bottom: 18px;
-        font-size: 30px;
+        margin-bottom: 10px;
+        font-size: 26px;
     }
 
     .home-menu {
-        gap: 14px;
+        gap: 10px;
     }
 
     .home-menu-button {
-        min-height: 82px;
-        border-radius: 24px;
+        min-height: 64px;
+        padding: 6px 14px;
+        border-width: 2px;
+        border-radius: 20px;
     }
 
     .home-menu-button img {
-        width: 62px;
-        height: 62px;
-        flex-basis: 62px;
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
     }
 
     .home-menu-button span {
-        font-size: 20px;
+        font-size: 18px;
+    }
+}
+
+@media (max-height: 600px) {
+    .home-page {
+        padding-top: 25vh;
+        padding-top: 25dvh;
+    }
+
+    .home-title {
+        margin-bottom: 8px;
+        font-size: 23px;
+    }
+
+    .home-menu {
+        gap: 8px;
+    }
+
+    .home-menu-button {
+        min-height: 58px;
+        padding-block: 4px;
+    }
+
+    .home-menu-button img {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+    }
+
+    .home-menu-button span {
+        font-size: 17px;
     }
 }
