@@ -71,12 +71,8 @@ async function loadStamps() {
         card.classList.remove("locked");
         card.classList.add("unlocked");
 
-        card.disabled = false;
-
-        card.onclick = () => {
-            location.href =
-                `character-card.html?id=${character.id}&from=rally`;
-        };
+        card.disabled = true;
+        card.onclick = null;
 
         unlocked.add(character.id);
     });

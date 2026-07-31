@@ -16,7 +16,7 @@ function getUrlParams() {
     };
 }
 
-const { id, autoplay } = getUrlParams();
+const { id, from, autoplay } = getUrlParams();
 
 const character = characters.find(item => item.id === id);
 
@@ -60,7 +60,10 @@ function closeCard() {
         characterVoice.currentTime = 0;
     }
 
-    location.href = "stamp-rally.html";
+    location.href =
+        from === "character-list"
+            ? "character-list.html"
+            : "stamp-rally.html";
 }
 
 voiceButton.addEventListener("click", playVoice);

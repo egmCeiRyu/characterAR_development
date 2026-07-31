@@ -23,6 +23,8 @@ const homeButton = document.getElementById("homeButton");
 const captureBtn = document.getElementById("captureBtn");
 const openFramePanelBtn = document.getElementById("openFramePanelBtn");
 const switchCameraBtn = document.getElementById("switchCameraBtn");
+const layerToggleBtn = document.getElementById("layerToggleBtn");
+const layerToggleLabel = document.getElementById("layerToggleLabel");
 
 const framePanel = document.getElementById("framePanel");
 const closeFramePanelBtn = document.getElementById("closeFramePanelBtn");
@@ -71,6 +73,7 @@ let facingMode = "user";
 
 let selectedFrame = null;
 let selectedFrameReady = false;
+let frameLayerMode = "front";
 
 let orientationTimer = null;
 
@@ -176,6 +179,13 @@ function bindEvents() {
         );
     }
 
+    if (layerToggleBtn) {
+        layerToggleBtn.addEventListener(
+            "click",
+            toggleFrameLayer
+        );
+    }
+
     if (closeFramePanelBtn) {
         closeFramePanelBtn.addEventListener(
             "click",
@@ -224,6 +234,56 @@ function bindEvents() {
         "pagehide",
         cleanup
     );
+}
+
+function toggleFrameLayer() {
+    frameLayerMode =
+        frameLayerMode === "front"
+            ? "behind"
+            : "front";
+
+    updateFrameLayerToggle();
+    latestPreviewReady = false;
+
+    if (
+        livePreviewRunning &&
+        !livePreviewProcessing
+    ) {
+        if (livePreviewTimer !== null) {
+            window.clearTimeout(livePreviewTimer);
+            livePreviewTimer = null;
+        }
+
+        scheduleLivePreview(0);
+    }
+}
+
+function updateFrameLayerToggle() {
+    if (!layerToggleBtn || !layerToggleLabel) {
+        return;
+    }
+
+    const isBehind = frameLayerMode === "behind";
+
+    layerToggleBtn.classList.toggle(
+        "is-behind",
+        isBehind
+    );
+
+    layerToggleBtn.setAttribute(
+        "aria-pressed",
+        String(isBehind)
+    );
+
+    layerToggleBtn.setAttribute(
+        "aria-label",
+        isBehind
+            ? "人物より後ろに表示"
+            : "人物より前に表示"
+    );
+
+    layerToggleLabel.textContent =
+        isBehind ? "後ろ" : "前";
 }
 
 async function handleVisibilityChange() {
@@ -1379,23 +1439,43 @@ async function composeLivePreviewFrame(generation) {
         return;
     }
 
-    // 2. Transparent character frame.
-    drawCover(
-        livePreviewContext,
-        selectedBackgroundImage,
-        FRAME_WIDTH,
-        FRAME_HEIGHT,
-        false
-    );
+    if (frameLayerMode === "behind") {
+        // Character behind the person.
+        drawCover(
+            livePreviewContext,
+            selectedBackgroundImage,
+            FRAME_WIDTH,
+            FRAME_HEIGHT,
+            false
+        );
 
-    // 3. Person cut from the same MediaPipe input frame.
-    createPersonCutout(segmentationResults);
+        createPersonCutout(segmentationResults);
 
-    livePreviewContext.drawImage(
-        personCanvas,
-        0,
-        0,
-        FRAME_WIDTH,
-        FRAME_HEIGHT
-    );
+        livePreviewContext.drawImage(
+            personCanvas,
+            0,
+            0,
+            FRAME_WIDTH,
+            FRAME_HEIGHT
+        );
+    } else {
+        // Character in front of the person.
+        createPersonCutout(segmentationResults);
+
+        livePreviewContext.drawImage(
+            personCanvas,
+            0,
+            0,
+            FRAME_WIDTH,
+            FRAME_HEIGHT
+        );
+
+        drawCover(
+            livePreviewContext,
+            selectedBackgroundImage,
+            FRAME_WIDTH,
+            FRAME_HEIGHT,
+            false
+        );
+    }
 }

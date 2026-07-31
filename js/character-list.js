@@ -3,11 +3,11 @@ import { characters } from "./data/characters.js";
 const characterGrid = document.getElementById("characterGrid");
 
 let USER_ID = null;
-let unlockedCharacterIds = new Set();
+let collectedCharacterIds = new Set();
 
 async function initCharacterList() {
     await loginUser();
-    await loadUnlockedCharacters();
+    await loadCollectedCharacters();
     renderCharacterGrid();
 }
 
@@ -32,7 +32,7 @@ async function loginUser() {
     USER_ID = data.user.id;
 }
 
-async function loadUnlockedCharacters() {
+async function loadCollectedCharacters() {
     if (!USER_ID) return;
 
     const { data, error } =
@@ -46,7 +46,7 @@ async function loadUnlockedCharacters() {
         return;
     }
 
-    unlockedCharacterIds = new Set(
+    collectedCharacterIds = new Set(
         data.map(item => item.character_id)
     );
 }
@@ -57,25 +57,21 @@ function renderCharacterGrid() {
     characterGrid.innerHTML = "";
 
     characters.forEach(character => {
-        const isUnlocked =
-            unlockedCharacterIds.has(character.id);
+        const isCollected =
+            collectedCharacterIds.has(character.id);
 
-        const card = document.createElement("button");
+        const card = document.createElement("article");
 
-        card.type = "button";
-
-        card.className = isUnlocked
-            ? "character-card unlocked"
-            : "character-card locked";
-
-        card.disabled = !isUnlocked;
+        card.className = isCollected
+            ? "character-card collected"
+            : "character-card";
 
         card.dataset.characterId = character.id;
 
         card.innerHTML = `
             <div class="character-image-wrap">
                 <img src="${character.portrait}" alt="${character.name}">
-                ${isUnlocked ? "" : `<div class="lock-icon">🔒</div>`}
+                ${isCollected ? `<div class="collected-badge">GET</div>` : ""}
             </div>
 
             <div class="character-name">
@@ -83,16 +79,37 @@ function renderCharacterGrid() {
             </div>
 
             <div class="character-status">
-                ${isUnlocked ? "ARで見る" : "未取得"}
+                ${isCollected ? "獲得済み" : "利用できます"}
+            </div>
+
+            <div class="character-actions">
+                <button
+                    class="character-action-button ar-button"
+                    type="button">
+                    ARで見る
+                </button>
+
+                <button
+                    class="character-action-button voice-button"
+                    type="button">
+                    音声を聞く
+                </button>
             </div>
         `;
 
-        if (isUnlocked) {
-            card.addEventListener("click", () => {
+        card
+            .querySelector(".ar-button")
+            .addEventListener("click", () => {
                 location.href =
                     `character-ar.html?id=${character.id}`;
             });
-        }
+
+        card
+            .querySelector(".voice-button")
+            .addEventListener("click", () => {
+                location.href =
+                    `character-card.html?id=${character.id}&from=character-list`;
+            });
 
         characterGrid.appendChild(card);
     });

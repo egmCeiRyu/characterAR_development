@@ -247,6 +247,58 @@ body {
         0 0 2px rgba(0, 0, 0, .65);
 }
 
+.layer-toggle-btn {
+    position: absolute;
+    right: max(25px, env(safe-area-inset-right));
+    bottom: 6px;
+    z-index: 3;
+}
+
+.layer-toggle-icon {
+    position: relative;
+    width: 28px;
+    height: 25px;
+}
+
+.layer-toggle-person,
+.layer-toggle-person::after,
+.layer-toggle-frame {
+    position: absolute;
+    display: block;
+}
+
+.layer-toggle-person {
+    left: 10px;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #74dc8a;
+    z-index: 2;
+}
+
+.layer-toggle-person::after {
+    content: "";
+    left: -2px;
+    top: 7px;
+    width: 12px;
+    height: 13px;
+    border-radius: 6px 6px 3px 3px;
+    background: #74dc8a;
+}
+
+.layer-toggle-frame {
+    inset: 4px 0 0;
+    border: 2px solid #ffd166;
+    border-radius: 4px;
+    z-index: 3;
+}
+
+.layer-toggle-btn.is-behind .layer-toggle-frame {
+    z-index: 1;
+    border-color: #73d7ff;
+}
+
 /* =========================
    Capture Button - Camera Icon
 ========================= */
@@ -730,6 +782,11 @@ body {
     }
 
     #openFramePanelBtn {
+        bottom: 5px;
+    }
+
+    .layer-toggle-btn {
+        right: max(12px, env(safe-area-inset-right));
         bottom: 5px;
     }
 
