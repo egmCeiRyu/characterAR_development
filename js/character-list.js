@@ -79,7 +79,7 @@ function renderCharacterGrid() {
             </div>
 
             <div class="character-status">
-                ${isCollected ? "獲得済み" : "利用できます"}
+                ${isCollected ? "獲得済み" : "未獲得"}
             </div>
 
             ${isCollected ? `

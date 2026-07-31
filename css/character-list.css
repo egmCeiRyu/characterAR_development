@@ -53,9 +53,18 @@ body {
 }
 
 .character-image-wrap img {
-    width: 82%;
-    height: 82%;
+    width: 92%;
+    height: 92%;
     object-fit: contain;
+    object-position: center bottom;
+    transition:
+        filter .2s ease,
+        opacity .2s ease;
+}
+
+.character-card:not(.collected) .character-image-wrap img {
+    filter: grayscale(1) brightness(0);
+    opacity: .28;
 }
 
 .collected-badge {
