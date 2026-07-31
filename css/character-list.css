@@ -67,24 +67,6 @@ body {
     opacity: .28;
 }
 
-.collected-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 46px;
-    height: 28px;
-    padding: 0 10px;
-    border-radius: 999px;
-    color: #fff;
-    background: #25b864;
-    box-shadow: 0 4px 12px rgba(0,0,0,.18);
-    font-size: 12px;
-    font-weight: 900;
-}
-
 .locked-badge {
     position: absolute;
     inset: 0;

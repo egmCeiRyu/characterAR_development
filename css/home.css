@@ -29,8 +29,8 @@ body {
     background-repeat: no-repeat;
 
     color: #102044;
+    overflow: hidden;
 }
-
 .home-page {
     width: 100%;
     max-width: 430px;
@@ -38,18 +38,25 @@ body {
     min-height: 100dvh;
     margin: 0 auto;
 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    padding: 0 20px calc(18px + env(safe-area-inset-bottom));
     padding:
-        46vh
-        20px
-        calc(32px + env(safe-area-inset-bottom));
+        0
+        clamp(14px, 4vw, 20px)
+        calc(clamp(14px, 2.5dvh, 24px) + env(safe-area-inset-bottom));
 }
 
 .home-title {
-    margin: 0 0 24px;
+    margin: 0 0 14px;
+    margin: 0 0 clamp(10px, 1.8dvh, 18px);
 
     text-align: center;
 
-    font-size: 34px;
+    font-size: 30px;
+    font-size: clamp(24px, 4.2dvh, 34px);
     line-height: 1.15;
     font-weight: 900;
     letter-spacing: .04em;
@@ -63,25 +70,32 @@ body {
 
 .home-menu {
     display: grid;
-    gap: 18px;
+    gap: 14px;
+    gap: clamp(9px, 1.8dvh, 18px);
 }
 
 .home-menu-button {
     width: 100%;
-    min-height: 56px;
+    min-height: 92px;
+    min-height: clamp(70px, 13dvh, 110px);
 
     display: flex;
     align-items: center;
     gap: 0px;
 
-    padding: 16px 22px;
+    padding: 12px 20px;
+    padding:
+        clamp(6px, 1.4dvh, 16px)
+        clamp(14px, 5vw, 22px);
 
     background: rgba(255,255,255,.90);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 
     border: 3px solid rgba(215,233,255,.95);
-    border-radius: 28px;
+    border: clamp(2px, .4dvh, 3px) solid rgba(215,233,255,.95);
+    border-radius: 24px;
+    border-radius: clamp(20px, 3.6dvh, 28px);
 
     color: #102044;
     text-decoration: none;
@@ -101,10 +115,13 @@ body {
 }
 
 .home-menu-button img {
-    flex: 0 0 52px;
+    flex: 0 0 62px;
+    flex: 0 0 clamp(46px, 8.5dvh, 72px);
 
-    width: 72px;
-    height: 72px;
+    width: 62px;
+    height: 62px;
+    width: clamp(46px, 8.5dvh, 72px);
+    height: clamp(46px, 8.5dvh, 72px);
 
     object-fit: contain;
 }
@@ -112,80 +129,11 @@ body {
 .home-menu-button span {
     flex: 1;
 
-    font-size: 22px;
+    font-size: 20px;
+    font-size: clamp(17px, 2.7dvh, 22px);
     line-height: 1.25;
     font-weight: 900;
     letter-spacing: .03em;
 
     color: #006bff;
-}
-
-@media (max-height: 740px) {
-    .home-page {
-        padding:
-            32vh
-            16px
-            calc(14px + env(safe-area-inset-bottom));
-        padding:
-            32dvh
-            16px
-            calc(14px + env(safe-area-inset-bottom));
-    }
-
-    .home-title {
-        margin-bottom: 10px;
-        font-size: 26px;
-    }
-
-    .home-menu {
-        gap: 10px;
-    }
-
-    .home-menu-button {
-        min-height: 64px;
-        padding: 6px 14px;
-        border-width: 2px;
-        border-radius: 20px;
-    }
-
-    .home-menu-button img {
-        width: 52px;
-        height: 52px;
-        flex-basis: 52px;
-    }
-
-    .home-menu-button span {
-        font-size: 18px;
-    }
-}
-
-@media (max-height: 600px) {
-    .home-page {
-        padding-top: 25vh;
-        padding-top: 25dvh;
-    }
-
-    .home-title {
-        margin-bottom: 8px;
-        font-size: 23px;
-    }
-
-    .home-menu {
-        gap: 8px;
-    }
-
-    .home-menu-button {
-        min-height: 58px;
-        padding-block: 4px;
-    }
-
-    .home-menu-button img {
-        width: 46px;
-        height: 46px;
-        flex-basis: 46px;
-    }
-
-    .home-menu-button span {
-        font-size: 17px;
-    }
 }

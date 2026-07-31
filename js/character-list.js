@@ -73,9 +73,7 @@ function renderCharacterGrid() {
         card.innerHTML = `
             <div class="character-image-wrap">
                 <img src="${character.portrait}" alt="${character.name}">
-                ${isCollected
-                    ? (isFree ? "" : `<div class="collected-badge">GET</div>`)
-                    : `
+                ${isCollected ? "" : `
                         <div class="locked-badge" aria-label="未獲得">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <rect x="5" y="10" width="14" height="11" rx="3"></rect>
@@ -83,7 +81,7 @@ function renderCharacterGrid() {
                                 <circle cx="12" cy="15.5" r="1.2"></circle>
                             </svg>
                         </div>
-                    `}
+                `}
             </div>
 
             <div class="character-name">
