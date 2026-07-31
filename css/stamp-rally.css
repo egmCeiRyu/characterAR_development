@@ -1,0 +1,326 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        linear-gradient(
+            180deg,
+            #eaf5ff 0%,
+            #ffffff 100%
+        );
+
+    color: #102044;
+}
+
+.container {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+
+    padding:
+        86px
+        18px
+        calc(28px + env(safe-area-inset-bottom));
+
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 24px;
+
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 900;
+
+    color: #006bff;
+}
+
+.stamp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    margin-bottom: 22px;
+    margin-top: 32px;
+}
+
+.stamp-card {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    border: 3px solid #d7e9ff;
+    border-radius: 24px;
+
+    background: rgba(255,255,255,.96);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+
+    box-shadow:
+        0 10px 22px rgba(0,80,180,.10);
+
+    cursor: pointer;
+
+    transition:
+        transform .18s ease,
+        opacity .18s ease,
+        filter .18s ease;
+}
+
+.stamp-card:active {
+    transform: scale(.96);
+}
+
+.stamp-card:disabled {
+    cursor: default;
+}
+
+.stamp-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.locked {
+    opacity: .18;
+    filter: grayscale(100%);
+}
+
+.unlocked {
+    opacity: 1;
+    filter: none;
+    animation: pop .28s ease;
+}
+
+.stamp-level-card {
+    width: 100%;
+
+    margin: 22px 0;
+    padding: 18px;
+
+    background: rgba(255,255,255,.96);
+    border: 3px solid #d7e9ff;
+    border-radius: 24px;
+
+    box-shadow:
+        0 10px 22px rgba(0,80,180,.10);
+}
+
+.level-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 12px;
+
+    font-size: 15px;
+    font-weight: 900;
+
+    color: #102044;
+}
+
+#progressText {
+    font-size: 18px;
+    color: #006bff;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 14px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+    background: #e5eefc;
+}
+
+#progressFill {
+    width: 0%;
+    height: 100%;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #006bff,
+            #22b7ff
+        );
+
+    transition: width .35s ease;
+}
+
+.reward-box {
+    width: 100%;
+
+    margin: 0 0 22px;
+    padding: 18px;
+
+    background: rgba(255,255,255,.96);
+    border: 3px solid #d7e9ff;
+    border-radius: 24px;
+
+    box-shadow:
+        0 10px 22px rgba(0,80,180,.10);
+}
+
+.reward-box h2 {
+    margin: 0 0 14px;
+
+    font-size: 22px;
+    font-weight: 900;
+
+    color: #006bff;
+}
+
+.reward-image-frame {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 16 / 9;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+    background: #eef5ff;
+}
+
+.reward-image-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    opacity: .28;
+    filter: grayscale(100%);
+}
+
+.reward-lock {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 40px;
+
+    background: rgba(255,255,255,.35);
+}
+
+.reward-box.completed .reward-image-frame img {
+    opacity: 1;
+    filter: none;
+}
+
+.reward-box.completed .reward-lock {
+    display: none;
+}
+
+.complete-box {
+    display: none;
+
+    margin: 0 0 22px;
+    padding: 18px;
+
+    background: #fff7d9;
+    border: 3px solid #ffd24d;
+    border-radius: 24px;
+
+    font-weight: 900;
+
+    color: #102044;
+}
+
+.complete-box p {
+    margin: 0 0 14px;
+}
+
+.gift-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 48px;
+    padding: 0 24px;
+
+    border-radius: 999px;
+
+    background: #ff6b6b;
+    color: #ffffff;
+
+    text-decoration: none;
+    font-weight: 900;
+}
+
+.buttons {
+    margin-top: 8px;
+    padding-bottom: 20px;
+}
+
+.scan-button {
+    width: 100%;
+    min-height: 62px;
+
+    border: none;
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #006bff,
+            #22b7ff
+        );
+
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: .04em;
+
+    box-shadow:
+        0 10px 24px rgba(0,107,255,.30);
+
+}
+
+.scan-button:active {
+    transform: scale(.97);
+}
+
+@keyframes pop {
+    from {
+        transform: scale(.82);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .stamp-grid {
+        gap: 12px;
+    }
+
+    .stamp-card {
+        border-radius: 20px;
+        padding: 12px;
+    }
+}

@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+}
+
+#homeButton {
+    position: fixed;
+
+    top: calc(16px + env(safe-area-inset-top));
+    left: max(16px, calc(50vw - 215px + 16px));
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.92);
+    color: #102044;
+
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 900;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.18);
+
+    z-index: 9999;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+#homeButton:active {
+    transform: scale(.94);
+}
