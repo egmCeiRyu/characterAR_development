@@ -71,15 +71,21 @@ function renderCharacterGrid() {
         card.innerHTML = `
             <div class="character-image-wrap">
                 <img src="${character.portrait}" alt="${character.name}">
-                ${isCollected ? `<div class="collected-badge">GET</div>` : ""}
+                ${isCollected
+                    ? `<div class="collected-badge">GET</div>`
+                    : `
+                        <div class="locked-badge" aria-label="未獲得">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="5" y="10" width="14" height="11" rx="3"></rect>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                                <circle cx="12" cy="15.5" r="1.2"></circle>
+                            </svg>
+                        </div>
+                    `}
             </div>
 
             <div class="character-name">
                 ${character.name}
-            </div>
-
-            <div class="character-status">
-                ${isCollected ? "獲得済み" : "未獲得"}
             </div>
 
             ${isCollected ? `

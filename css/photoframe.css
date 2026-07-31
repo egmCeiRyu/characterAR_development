@@ -254,6 +254,24 @@ body {
     z-index: 3;
 }
 
+.layer-toggle-btn:not(.is-behind) {
+    box-shadow:
+        0 0 0 3px rgba(255, 209, 102, .72),
+        0 10px 26px rgba(0, 0, 0, .34);
+}
+
+.layer-toggle-btn.is-behind {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(26, 126, 174, .88),
+            rgba(10, 72, 108, .82)
+        );
+    box-shadow:
+        0 0 0 3px rgba(115, 215, 255, .72),
+        0 10px 26px rgba(0, 0, 0, .34);
+}
+
 .layer-toggle-icon {
     position: relative;
     width: 28px;

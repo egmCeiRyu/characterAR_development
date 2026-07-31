@@ -109,6 +109,7 @@ initialize();
 async function initialize() {
     createFrameCarousel();
     bindEvents();
+    updateFrameLayerToggle();
 
     initializeSelfieSegmentation();
 
@@ -243,18 +244,35 @@ function toggleFrameLayer() {
             : "front";
 
     updateFrameLayerToggle();
+    requestLivePreviewRefresh();
+}
+
+function requestLivePreviewRefresh() {
     latestPreviewReady = false;
+    livePreviewGeneration += 1;
 
-    if (
-        livePreviewRunning &&
-        !livePreviewProcessing
-    ) {
-        if (livePreviewTimer !== null) {
-            window.clearTimeout(livePreviewTimer);
-            livePreviewTimer = null;
+    if (livePreviewTimer !== null) {
+        window.clearTimeout(livePreviewTimer);
+        livePreviewTimer = null;
+    }
+
+    if (!livePreviewRunning) {
+        return;
+    }
+
+    const scheduleRefresh = () => {
+        if (livePreviewRunning) {
+            scheduleLivePreview(0);
         }
+    };
 
-        scheduleLivePreview(0);
+    if (livePreviewProcessing) {
+        livePreviewFramePromise.then(
+            scheduleRefresh,
+            scheduleRefresh
+        );
+    } else {
+        scheduleRefresh();
     }
 }
 
@@ -616,6 +634,9 @@ async function selectFrame(frame, button) {
             selectedPhotoFrame.src = frame.full;
             selectedPhotoFrame.style.display = "none";
         }
+
+        closeFramePanel();
+        requestLivePreviewRefresh();
     } catch (error) {
         console.error(
             "Background load error:",
