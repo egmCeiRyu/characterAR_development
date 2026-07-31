@@ -100,6 +100,8 @@ const frames = Array.from(
     }
 );
 
+window.toggleFrameLayer = toggleFrameLayer;
+
 initialize();
 
 /* =========================
@@ -180,13 +182,6 @@ function bindEvents() {
         );
     }
 
-    if (layerToggleBtn) {
-        layerToggleBtn.addEventListener(
-            "click",
-            toggleFrameLayer
-        );
-    }
-
     if (closeFramePanelBtn) {
         closeFramePanelBtn.addEventListener(
             "click",
@@ -237,7 +232,12 @@ function bindEvents() {
     );
 }
 
-function toggleFrameLayer() {
+function toggleFrameLayer(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     frameLayerMode =
         frameLayerMode === "front"
             ? "behind"
