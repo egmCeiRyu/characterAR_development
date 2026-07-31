@@ -1,6 +1,7 @@
 import { characters } from "./data/characters.js";
 
-const MAX_STAMPS = characters.length;
+const MAX_STAMPS =
+    characters.filter(character => !character.free).length;
 
 let USER_ID = null;
 let confettiPlayed = false;

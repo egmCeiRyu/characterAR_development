@@ -329,7 +329,9 @@ async function startAR() {
         renderer.setClearAlpha(0);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-        characters.forEach(character => {
+        characters
+            .filter(character => !character.free)
+            .forEach(character => {
             const anchor =
                 mindarThree.addAnchor(character.markerIndex);
 

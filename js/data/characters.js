@@ -1,8 +1,10 @@
+import { characterNames } from "./character-names.js";
+
 export const characters = [
     {
         id: 4,
         markerIndex: 0,
-        name: "Character 01",
+        name: characterNames[4],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker01.webp",
         stamp: "./assets/stamps/stamp01.png",
@@ -18,7 +20,7 @@ export const characters = [
     {
         id: 5,
         markerIndex: 1,
-        name: "Character 02",
+        name: characterNames[5],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker02.webp",
         stamp: "./assets/stamps/stamp02.png",
@@ -34,7 +36,7 @@ export const characters = [
     {
         id: 6,
         markerIndex: 2,
-        name: "Character 03",
+        name: characterNames[6],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker03.webp",
         stamp: "./assets/stamps/stamp03.png",
@@ -50,7 +52,7 @@ export const characters = [
     {
         id: 7,
         markerIndex: 3,
-        name: "Character 04",
+        name: characterNames[7],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker04.webp",
         stamp: "./assets/stamps/stamp04.png",
@@ -66,7 +68,7 @@ export const characters = [
     {
         id: 8,
         markerIndex: 4,
-        name: "Character 05",
+        name: characterNames[8],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker05.webp",
         stamp: "./assets/stamps/stamp05.png",
@@ -82,7 +84,7 @@ export const characters = [
     {
         id: 9,
         markerIndex: 5,
-        name: "Character 06",
+        name: characterNames[9],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker06.webp",
         stamp: "./assets/stamps/stamp06.png",
@@ -98,7 +100,7 @@ export const characters = [
     {
         id: 10,
         markerIndex: 6,
-        name: "Character 07",
+        name: characterNames[10],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker07.webp",
         stamp: "./assets/stamps/stamp07.png",
@@ -114,7 +116,7 @@ export const characters = [
     {
         id: 11,
         markerIndex: 7,
-        name: "Character 08",
+        name: characterNames[11],
         description: "キャラクターをARで楽しもう！",
         marker: "./assets/markers/marker08.webp",
         stamp: "./assets/stamps/stamp08.png",
@@ -126,5 +128,56 @@ export const characters = [
         rotation: 0,
         height: 0,
         shadow: true
+    },
+    {
+        id: 12,
+        markerIndex: null,
+        name: characterNames[12],
+        description: "Free Character",
+        marker: null,
+        stamp: null,
+        card: "./assets/cards/character08.webp",
+        portrait: "./assets/characters/character08.webp",
+        model: "./assets/models/character08.glb",
+        voice: "./assets/sounds/voice08.mp3",
+        scale: 1.0,
+        rotation: 0,
+        height: 0,
+        shadow: true,
+        free: true
+    },
+    {
+        id: 13,
+        markerIndex: null,
+        name: characterNames[13],
+        description: "Free Character",
+        marker: null,
+        stamp: null,
+        card: "./assets/cards/character08.webp",
+        portrait: "./assets/characters/character08.webp",
+        model: "./assets/models/character08.glb",
+        voice: "./assets/sounds/voice08.mp3",
+        scale: 1.0,
+        rotation: 0,
+        height: 0,
+        shadow: true,
+        free: true
+    },
+    {
+        id: 14,
+        markerIndex: null,
+        name: characterNames[14],
+        description: "Free Character",
+        marker: null,
+        stamp: null,
+        card: "./assets/cards/character08.webp",
+        portrait: "./assets/characters/character08.webp",
+        model: "./assets/models/character08.glb",
+        voice: "./assets/sounds/voice08.mp3",
+        scale: 1.0,
+        rotation: 0,
+        height: 0,
+        shadow: true,
+        free: true
     }
 ];

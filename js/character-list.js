@@ -57,7 +57,9 @@ function renderCharacterGrid() {
     characterGrid.innerHTML = "";
 
     characters.forEach(character => {
+        const isFree = character.free === true;
         const isCollected =
+            isFree ||
             collectedCharacterIds.has(character.id);
 
         const card = document.createElement("article");
@@ -72,7 +74,7 @@ function renderCharacterGrid() {
             <div class="character-image-wrap">
                 <img src="${character.portrait}" alt="${character.name}">
                 ${isCollected
-                    ? `<div class="collected-badge">GET</div>`
+                    ? `<div class="collected-badge${isFree ? " free-badge" : ""}">${isFree ? "FREE" : "GET"}</div>`
                     : `
                         <div class="locked-badge" aria-label="未獲得">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
