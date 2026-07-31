@@ -91,10 +91,21 @@ body {
 }
 
 .character-name {
-    padding-top: 14px;
-    font-size: 18px;
+    min-height: 58px;
+    padding: 12px 12px 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: clamp(14px, 4vw, 18px);
+    line-height: 1.2;
     font-weight: 700;
     color: #333;
+
+    text-align: center;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .character-actions {
@@ -112,6 +123,9 @@ body {
     font: inherit;
     font-size: 13px;
     font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
     cursor: pointer;
     transition: transform .16s ease, filter .16s ease;
 }

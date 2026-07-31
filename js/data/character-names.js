@@ -12,14 +12,14 @@
  * - mensagens relacionadas ao personagem
  */
 export const characterNames = {
-    4: "Character 01",
-    5: "Character 02",
-    6: "Character 03",
-    7: "Character 04",
-    8: "Character 05",
-    9: "Character 06",
-    10: "Character 07",
-    11: "Character 08",
+    4: "Akira Kurogane",
+    5: "Hikari Amatsuki",
+    6: "Ren Kazehaya",
+    7: "Yuna Shirogane",
+    8: "Kaien Homura",
+    9: "Aoi Mizuhara",
+    10: "Rei Tsukikage",
+    11: "Sora Kaminari",
 
     // Personagens gratuitos
     12: "Tetsuya Hayakawa",
