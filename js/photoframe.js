@@ -100,8 +100,6 @@ const frames = Array.from(
     }
 );
 
-window.toggleFrameLayer = toggleFrameLayer;
-
 initialize();
 
 /* =========================
@@ -179,6 +177,13 @@ function bindEvents() {
         openFramePanelBtn.addEventListener(
             "click",
             openFramePanel
+        );
+    }
+
+    if (layerToggleBtn) {
+        layerToggleBtn.addEventListener(
+            "click",
+            toggleFrameLayer
         );
     }
 

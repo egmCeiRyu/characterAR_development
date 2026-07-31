@@ -252,6 +252,7 @@ body {
     right: max(25px, env(safe-area-inset-right));
     bottom: 6px;
     z-index: 3;
+    pointer-events: auto;
 }
 
 .layer-toggle-btn:not(.is-behind) {
@@ -729,7 +730,8 @@ body {
 /* Conteúdo interno não bloqueia o clique */
 
 #openFramePanelBtn *,
-#captureBtn * {
+#captureBtn *,
+#layerToggleBtn * {
     pointer-events: none;
 }
 
