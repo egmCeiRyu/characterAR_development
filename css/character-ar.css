@@ -257,7 +257,7 @@ a {
     .home-button {
         width: 48px;
         height: 48px;
-        font-size: 22px;
+        font-size: 0;
     }
 
     #targetBtn,
