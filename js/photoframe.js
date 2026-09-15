@@ -73,7 +73,7 @@ let facingMode = "environment";
 
 let selectedFrame = null;
 let selectedFrameReady = false;
-let frameLayerMode = "front";
+let frameLayerMode = "behind";
 
 let orientationTimer = null;
 
