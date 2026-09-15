@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
 <link rel="stylesheet" href="css/common.css">
-<link rel="stylesheet" href="css/photoframe.css">
+<link rel="stylesheet" href="css/photoframe.css?v=20260915_01">
 
 <title>Photo Frame</title>
 </head>
@@ -158,11 +158,27 @@
 </div>
 <a id="homeButton" href="home.html">🏠</a>
 
+<button id="openInstructionsBtn" class="instructions-help-btn" type="button"
+    aria-haspopup="dialog" aria-controls="instructionsDialog">使い方</button>
+
+<dialog id="instructionsDialog" class="instructions-dialog"
+    aria-labelledby="instructionsTitle" aria-describedby="instructionsSteps">
+    <h1 id="instructionsTitle">ARフォトフレームの使い方</h1>
+    <ol id="instructionsSteps">
+        <li>左下のフォトフレームリストからフレームを選ぼう</li>
+        <li>右下のボタンで、フレーム上に映る人物の手前・奥の切り替えができます</li>
+        <li>中央のカメラボタンで写真を撮ろう</li>
+    </ol>
+    <form method="dialog">
+        <button class="instructions-start-btn" autofocus>はじめる</button>
+    </form>
+</dialog>
+
 <script
     src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js">
 </script>
 
-<script src="js/photoframe.js?v=20260801_01"></script>
+<script src="js/photoframe.js?v=20260915_01"></script>
 
 </body>
 </html>
