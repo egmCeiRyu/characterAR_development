@@ -69,7 +69,7 @@ let cameraStarting = false;
 let cameraSwitching = false;
 let captureInProgress = false;
 
-let facingMode = "user";
+let facingMode = "environment";
 
 let selectedFrame = null;
 let selectedFrameReady = false;
@@ -110,6 +110,19 @@ async function initialize() {
     createFrameCarousel();
     bindEvents();
     updateFrameLayerToggle();
+
+    const instructionsDialog = document.getElementById("instructionsDialog");
+    const openInstructionsBtn = document.getElementById("openInstructionsBtn");
+
+    if (instructionsDialog && openInstructionsBtn) {
+        openInstructionsBtn.addEventListener("click", () => {
+            instructionsDialog.showModal();
+        });
+        instructionsDialog.addEventListener("close", () => {
+            openInstructionsBtn.focus();
+        });
+        instructionsDialog.showModal();
+    }
 
     initializeSelfieSegmentation();
 
