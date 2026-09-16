@@ -69,7 +69,7 @@ let cameraStarting = false;
 let cameraSwitching = false;
 let captureInProgress = false;
 
-let facingMode = "user";
+let facingMode = "environment";
 
 let selectedFrame = null;
 let selectedFrameReady = false;
