@@ -35,7 +35,7 @@ function initCharacterCard() {
     characterCardImage.alt = character.name;
 
     if (character.voice) characterVoice.src = character.voice;
-    else { voiceButton.disabled = true; voiceButton.textContent = "音声準備中"; }
+    else { voiceButton.disabled = true; voiceButton.textContent = "音声なし"; }
 
     if (autoplay && character.voice) {
         setTimeout(() => {

@@ -106,7 +106,7 @@ function renderCharacterGrid() {
 
             if (!character.voice) {
                 voiceButton.disabled = true;
-                voiceButton.textContent = "音声準備中";
+                voiceButton.textContent = "音声なし";
             }
             voiceButton.addEventListener("click", () => {
                 location.href =

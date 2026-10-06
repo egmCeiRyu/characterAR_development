@@ -142,7 +142,7 @@ function openCharacterModal(character, alreadyOwned = false) {
 
     if (characterVoiceButton) {
         characterVoiceButton.disabled = !character.voice;
-        characterVoiceButton.textContent = character.voice ? "音声を聞く" : "音声準備中";
+        characterVoiceButton.textContent = character.voice ? "音声を聞く" : "音声なし";
         characterVoiceButton.onclick = async () => {
             characterVoiceButton.disabled = true;
 

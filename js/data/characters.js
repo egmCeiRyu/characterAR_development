@@ -123,7 +123,7 @@ export const characters = [
         card: "./assets/cards/character08.webp",
         portrait: "./assets/characters/character08.webp",
         model: "./assets/models/character08.glb",
-        voice: "./assets/sounds/voice08.mp3", // Temporário: cópia da voz 07.
+        voice: null, // Yamada não terá voz, conforme confirmação do cliente.
         scale: 1.0,
         rotation: 0,
         height: 0,
