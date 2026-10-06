@@ -1,3 +1,4 @@
+import { requireAccess } from "./access.js";
 import { characters } from "./data/characters.js";
 
 const characterName = document.getElementById("characterName");
@@ -32,9 +33,10 @@ function initCharacterCard() {
     characterCardImage.src = character.card;
     characterCardImage.alt = character.name;
 
-    characterVoice.src = character.voice;
+    if (character.voice) characterVoice.src = character.voice;
+    else { voiceButton.disabled = true; voiceButton.textContent = "音声準備中"; }
 
-    if (autoplay) {
+    if (autoplay && character.voice) {
         setTimeout(() => {
             playVoice();
         }, 350);
@@ -42,7 +44,7 @@ function initCharacterCard() {
 }
 
 function playVoice() {
-    if (!characterVoice) return;
+    if (!characterVoice || !character?.voice) return;
 
     characterVoice.pause();
     characterVoice.currentTime = 0;
@@ -69,4 +71,5 @@ function closeCard() {
 voiceButton.addEventListener("click", playVoice);
 closeButton.addEventListener("click", closeCard);
 
+if (character) await requireAccess(character);
 initCharacterCard();

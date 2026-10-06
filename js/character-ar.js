@@ -1,5 +1,6 @@
 import { characters } from "./data/characters.js";
 
+import { requireAccess } from "./access.js";
 AFRAME.registerComponent("character-ar-controller", {
     init: function () {
         this.targetBtn = document.getElementById("targetBtn");
@@ -21,7 +22,7 @@ AFRAME.registerComponent("character-ar-controller", {
         this.fixedCharacterY = 0;
         this.placeDistance = 1.8;
 
-        this.loadCharacterFromUrl();
+        this.loadCharacterFromUrl().catch(error => console.error(error));
 
         if (this.targetBtn) {
             this.targetBtn.addEventListener("click", (event) => {
@@ -62,7 +63,7 @@ AFRAME.registerComponent("character-ar-controller", {
         return Number(params.get("id"));
     },
 
-    loadCharacterFromUrl: function () {
+    loadCharacterFromUrl: async function () {
         if (!this.character) return;
 
         const characterId = this.getCharacterId();
@@ -77,6 +78,7 @@ AFRAME.registerComponent("character-ar-controller", {
             throw new Error("Character not found");
         }
 
+        await requireAccess(characterData);
         this.characterData = characterData;
 
         console.log("Character ID:", characterId);
@@ -115,7 +117,7 @@ AFRAME.registerComponent("character-ar-controller", {
     },
 
     placeCharacterInFrontOfCamera: function () {
-        if (this.characterPlaced) return;
+        if (!this.characterData || this.characterPlaced) return;
 
         if (!this.character || !this.camera) return;
         if (!this.character.object3D || !this.camera.object3D) return;

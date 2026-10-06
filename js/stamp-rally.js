@@ -11,24 +11,8 @@ const fromComplete =
         .get("from") === "complete";
 
 async function initStampRally() {
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (session?.user) {
-        USER_ID = session.user.id;
-    } else {
-        const { data, error } =
-            await supabaseClient.auth.signInAnonymously();
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        USER_ID = data.user.id;
-    }
-
+    const user = await initAnonymousUser();
+    USER_ID = user.id;
     await loadStamps();
 }
 
@@ -41,10 +25,7 @@ async function loadStamps() {
             .select("character_id")
             .eq("user_id", USER_ID);
 
-    if (error) {
-        console.error(error);
-        return;
-    }
+    if (error) throw error;
 
     document.querySelectorAll(".stamp-card").forEach(card => {
         card.classList.add("locked");
@@ -58,7 +39,7 @@ async function loadStamps() {
 
     data.forEach(item => {
         const character =
-            characters.find(c => c.id === item.character_id);
+            characters.find(c => !c.free && c.id === Number(item.character_id));
 
         if (!character) return;
 
@@ -148,11 +129,16 @@ function updateStampLevel(total) {
 async function resetStamps() {
     if (!USER_ID) return;
 
-    await supabaseClient
+    const { error } = await supabaseClient
         .from("user_stamps")
         .delete()
         .eq("user_id", USER_ID);
 
+    if (error) {
+        console.error(error);
+        alert("リセットに失敗しました。もう一度お試しください。");
+        return;
+    }
     confettiPlayed = false;
 
     await loadStamps();
@@ -181,4 +167,4 @@ function launchConfetti() {
 
 window.resetStamps = resetStamps;
 
-initStampRally();
+initStampRally().catch(error => { console.error(error); alert("通信エラー。再読み込みしてください。"); });

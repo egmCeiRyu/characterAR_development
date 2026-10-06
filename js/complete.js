@@ -1,3 +1,7 @@
+import { requireAccess } from "./access.js";
+document.querySelector("main").hidden = true;
+await requireAccess();
+document.querySelector("main").hidden = false;
 const completeVoice = document.getElementById("completeVoice");
 const playVoiceButton = document.getElementById("playVoiceButton");
 const rewardButton = document.getElementById("rewardButton");
@@ -5,7 +9,7 @@ const rewardButton = document.getElementById("rewardButton");
 let autoPlayed = false;
 
 // Tenta tocar automaticamente ao abrir a página
-window.addEventListener("load", async () => {
+async function playCompletionVoice() {
 
     try {
 
@@ -25,7 +29,9 @@ window.addEventListener("load", async () => {
 
     }
 
-});
+}
+if (document.readyState === "complete") playCompletionVoice();
+else window.addEventListener("load", playCompletionVoice, { once: true });
 
 // Botão para tocar novamente
 if (playVoiceButton) {
@@ -62,7 +68,7 @@ if (rewardButton) {
 
     rewardButton.addEventListener("click", () => {
 
-        location.href = "stamp-rally.html";
+        location.href = "stamp-rally.html?from=complete";
 
     });
 

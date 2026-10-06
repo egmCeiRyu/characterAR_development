@@ -140,6 +140,8 @@ function openCharacterModal(character, alreadyOwned = false) {
     }, 250);
 
     if (characterVoiceButton) {
+        characterVoiceButton.disabled = !character.voice;
+        characterVoiceButton.textContent = character.voice ? "音声を聞く" : "音声準備中";
         characterVoiceButton.onclick = async () => {
             characterVoiceButton.disabled = true;
 
@@ -163,28 +165,12 @@ function closeCharacterModal() {
 }
 
 async function getCurrentUser() {
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (session?.user) {
-        return session.user;
-    }
-
-    const { data, error } =
-        await supabaseClient.auth.signInAnonymously();
-
-    if (error) {
-        console.error(error);
-        showStampMessage("ログインエラー");
-        return null;
-    }
-
-    return data.user;
+    try { return await initAnonymousUser(); }
+    catch (error) { console.error(error); showStampMessage("ログインエラー"); return null; }
 }
 
 function saveLastScannedCharacter(character) {
-    sessionStorage.setItem(
+    try { sessionStorage.setItem(
         "lastScannedCharacter",
         JSON.stringify({
             id: character.id,
@@ -192,62 +178,35 @@ function saveLastScannedCharacter(character) {
             card: character.card,
             voice: character.voice || ""
         })
-    );
+    ); } catch (error) { console.warn("Unable to cache last scan:", error); }
 }
 
 async function saveCharacterStamp(character) {
-    const user = await getCurrentUser();
-
-    if (!user) {
-        showStampMessage("ログインエラー");
-        return false;
-    }
-
-    saveLastScannedCharacter(character);
-
-    const {
-        data: existing,
-        error: checkError
-    } = await supabaseClient
-        .from("user_stamps")
-        .select("character_id")
-        .eq("user_id", user.id)
-        .eq("character_id", character.id)
-        .maybeSingle();
-
-    if (checkError) {
-        console.error("Stamp check error:", checkError);
-        showStampMessage("通信エラー");
-
-        openCharacterModal(character, false);
-
-        return false;
-    }
-
-    if (existing) {
-        openCharacterModal(character, true);
+    try {
+        const user = await getCurrentUser();
+        if (!user) return false;
+        const findStamp = () => supabaseClient.from("user_stamps")
+            .select("character_id").eq("user_id", user.id).eq("character_id", character.id).limit(1);
+        const existing = await findStamp();
+        if (existing.error) throw existing.error;
+        if (existing.data?.length) {
+            saveLastScannedCharacter(character);
+            openCharacterModal(character, true);
+            return true;
+        }
+        const { error } = await supabaseClient.from("user_stamps").insert({ user_id: user.id, character_id: character.id });
+        if (error && error.code !== "23505") throw error;
+        const confirmed = await findStamp();
+        if (confirmed.error) throw confirmed.error;
+        if (!confirmed.data?.length) throw new Error("Stamp was not persisted");
+        saveLastScannedCharacter(character);
+        openCharacterModal(character, Boolean(error));
         return true;
-    }
-
-    const { error: insertError } = await supabaseClient
-        .from("user_stamps")
-        .insert({
-            user_id: user.id,
-            character_id: character.id
-        });
-
-    if (insertError) {
-        console.error("Stamp insert error:", insertError);
-        showStampMessage("保存エラー");
-
-        openCharacterModal(character, false);
-
+    } catch (error) {
+        console.error("Stamp save failed:", error);
+        showStampMessage("保存できませんでした。通信を確認して、もう一度スキャンしてください。");
         return false;
     }
-
-    openCharacterModal(character, false);
-
-    return true;
 }
 
 

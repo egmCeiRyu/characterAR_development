@@ -12,24 +12,8 @@ async function initCharacterList() {
 }
 
 async function loginUser() {
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (session?.user) {
-        USER_ID = session.user.id;
-        return;
-    }
-
-    const { data, error } =
-        await supabaseClient.auth.signInAnonymously();
-
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    USER_ID = data.user.id;
+    const user = await initAnonymousUser();
+    USER_ID = user.id;
 }
 
 async function loadCollectedCharacters() {
@@ -41,13 +25,10 @@ async function loadCollectedCharacters() {
             .select("character_id")
             .eq("user_id", USER_ID);
 
-    if (error) {
-        console.error(error);
-        return;
-    }
+    if (error) throw error;
 
     collectedCharacterIds = new Set(
-        data.map(item => item.character_id)
+        data.map(item => Number(item.character_id))
     );
 }
 
@@ -117,6 +98,10 @@ function renderCharacterGrid() {
             const voiceButton =
                 card.querySelector(".voice-button");
 
+            if (!character.voice) {
+                voiceButton.disabled = true;
+                voiceButton.textContent = "音声準備中";
+            }
             voiceButton.addEventListener("click", () => {
                 location.href =
                     `character-card.html?id=${character.id}&from=character-list`;
@@ -127,4 +112,8 @@ function renderCharacterGrid() {
     });
 }
 
-initCharacterList();
+initCharacterList().catch(error => {
+    console.error(error);
+    alert("通信エラー。再読み込みしてください。");
+    renderCharacterGrid();
+});

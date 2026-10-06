@@ -324,3 +324,7 @@ h1 {
         padding: 12px;
     }
 }
+/* Stamp 08 artwork is lighter; compensate only while it is locked. */
+.stamp-card.locked[data-character-id="11"] {
+    opacity: .30;
+}
