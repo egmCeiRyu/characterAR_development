@@ -105,8 +105,8 @@ function renderCharacterGrid() {
                 card.querySelector(".voice-button");
 
             if (!character.voice) {
-                voiceButton.disabled = true;
-                voiceButton.textContent = "音声なし";
+                voiceButton.textContent = "カードを見る";
+                voiceButton.setAttribute("aria-label", `${character.name}のカードを見る`);
             }
             voiceButton.addEventListener("click", () => {
                 location.href =
