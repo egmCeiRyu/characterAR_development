@@ -142,11 +142,11 @@ body {
     background: #ef8b31;
 }
 
-/* Equal card dimensions, including space for locked actions. */
-.character-grid { grid-auto-rows: 1fr; }
+/* Consistent card styling without reserving space for locked actions. */
+.character-grid { grid-auto-rows: auto; align-items: start; }
 .character-card { display: flex; flex-direction: column; }
 .character-image-wrap { width: 100%; flex-shrink: 0; }
 .character-name { box-sizing: border-box; flex-shrink: 0; }
 .character-actions { margin-top: auto; }
-.character-actions-placeholder { visibility: hidden; pointer-events: none; }
+.character-actions-placeholder { display: none; }
 .character-actions-placeholder .character-action-button { display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
