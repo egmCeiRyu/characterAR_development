@@ -81,13 +81,13 @@ function renderCharacterGrid() {
                     <button
                         class="character-action-button voice-button"
                         type="button">
-                        音声を聞く
+                        カードを開く
                     </button>
                 </div>
             ` : `
                 <div class="character-actions character-actions-placeholder" aria-hidden="true">
                     <span class="character-action-button ar-button">ARで見る</span>
-                    <span class="character-action-button voice-button">音声を聞く</span>
+                    <span class="character-action-button voice-button">カードを開く</span>
                 </div>
             `}
         `;
@@ -104,10 +104,7 @@ function renderCharacterGrid() {
             const voiceButton =
                 card.querySelector(".voice-button");
 
-            if (!character.voice) {
-                voiceButton.textContent = "カードを見る";
-                voiceButton.setAttribute("aria-label", `${character.name}のカードを見る`);
-            }
+            voiceButton.setAttribute("aria-label", `${character.name}のカードを開く`);
             voiceButton.addEventListener("click", () => {
                 location.href =
                     `character-card.html?id=${character.id}&from=character-list`;
