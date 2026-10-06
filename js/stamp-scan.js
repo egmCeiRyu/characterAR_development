@@ -1,3 +1,4 @@
+import { prepareCharacterMedia } from "./protected-media.js";
 import * as THREE from "three";
 import { MindARThree } from "mindar-image-three";
 import { characters } from "./data/characters.js";
@@ -175,8 +176,8 @@ function saveLastScannedCharacter(character) {
         JSON.stringify({
             id: character.id,
             name: character.name,
-            card: character.card,
-            voice: character.voice || ""
+            card: "",
+            voice: ""
         })
     ); } catch (error) { console.warn("Unable to cache last scan:", error); }
 }
@@ -190,6 +191,7 @@ async function saveCharacterStamp(character) {
         const existing = await findStamp();
         if (existing.error) throw existing.error;
         if (existing.data?.length) {
+            await prepareCharacterMedia(character, ["card", "voice"]);
             saveLastScannedCharacter(character);
             openCharacterModal(character, true);
             return true;
@@ -199,6 +201,7 @@ async function saveCharacterStamp(character) {
         const confirmed = await findStamp();
         if (confirmed.error) throw confirmed.error;
         if (!confirmed.data?.length) throw new Error("Stamp was not persisted");
+        await prepareCharacterMedia(character, ["card", "voice"]);
         saveLastScannedCharacter(character);
         openCharacterModal(character, Boolean(error));
         return true;

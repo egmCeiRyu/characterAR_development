@@ -1,0 +1,8 @@
+_backups/
+checks/*.log
+checks/*.pid
+checks/*processes*.json
+node_modules/
+.wrangler/
+.env*
+.dev.vars*

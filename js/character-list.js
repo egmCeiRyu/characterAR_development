@@ -8,6 +8,7 @@ let collectedCharacterIds = new Set();
 async function initCharacterList() {
     await loginUser();
     await loadCollectedCharacters();
+
     renderCharacterGrid();
 }
 
@@ -83,7 +84,12 @@ function renderCharacterGrid() {
                         音声を聞く
                     </button>
                 </div>
-            ` : ""}
+            ` : `
+                <div class="character-actions character-actions-placeholder" aria-hidden="true">
+                    <span class="character-action-button ar-button">ARで見る</span>
+                    <span class="character-action-button voice-button">音声を聞く</span>
+                </div>
+            `}
         `;
 
         if (isCollected) {
@@ -115,5 +121,6 @@ function renderCharacterGrid() {
 initCharacterList().catch(error => {
     console.error(error);
     alert("通信エラー。再読み込みしてください。");
+    collectedCharacterIds = new Set();
     renderCharacterGrid();
 });

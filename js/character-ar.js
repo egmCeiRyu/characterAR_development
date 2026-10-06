@@ -1,3 +1,4 @@
+import { prepareCharacterMedia } from "./protected-media.js";
 import { characters } from "./data/characters.js";
 
 import { requireAccess } from "./access.js";
@@ -79,6 +80,7 @@ AFRAME.registerComponent("character-ar-controller", {
         }
 
         await requireAccess(characterData);
+        await prepareCharacterMedia(characterData, ["model"]);
         this.characterData = characterData;
 
         console.log("Character ID:", characterId);

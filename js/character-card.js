@@ -1,3 +1,4 @@
+import { prepareCharacterMedia } from "./protected-media.js";
 import { requireAccess } from "./access.js";
 import { characters } from "./data/characters.js";
 
@@ -71,5 +72,8 @@ function closeCard() {
 voiceButton.addEventListener("click", playVoice);
 closeButton.addEventListener("click", closeCard);
 
-if (character) await requireAccess(character);
+if (character) {
+    await requireAccess(character);
+    await prepareCharacterMedia(character, ["card", "voice"]);
+}
 initCharacterCard();
