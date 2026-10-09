@@ -281,8 +281,10 @@ async function startAR() {
 
         const mindarThree = new MindARThree({
             container: document.querySelector("#arContainer"),
-            imageTargetSrc: "./assets/targets/targets-V2.mind",
+            imageTargetSrc: "./assets/targets/targets-V2.mind?v=68d570f",
             maxTrack: 1,
+            warmupTolerance: 2,
+            missTolerance: 8,
             filterMinCF: 0.001,
             filterBeta: 0.01
         });
@@ -307,6 +309,7 @@ async function startAR() {
                 if (scanLocked) return;
 
                 hideScanOverlays();
+                log(character.name + " 認識中...");
 
                 clearTimeout(globalScanTimer);
 
@@ -327,7 +330,7 @@ async function startAR() {
                         scanLocked = false;
                     }
 
-                }, 1500);
+                }, character.requiresScan ? 200 : 1500);
             };
 
             anchor.onTargetLost = () => {
