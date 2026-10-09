@@ -79,7 +79,8 @@ const read = f => fs.readFileSync(f,'utf8');
         assert.equal(redirects,allowed?0:1);
         return queries;
     }
-    assert.equal(await access([],characters.find(c=>c.free),true),0);
+    await access([],characters.find(c=>c.free),false);
+    await access([{character_id:12}],characters.find(c=>c.id===12),true);
     await access([],characters[0],false);
     await access([{character_id:'4'}],characters[0],true);
     await access([4,5,6,7,8,9,10].map(character_id=>({character_id})),null,false);

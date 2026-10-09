@@ -131,10 +131,10 @@ export const characters = [
     },
     {
         id: 12,
-        markerIndex: null,
+        markerIndex: 8,
         name: characterNames[12],
-        description: "Free Character",
-        marker: null,
+        description: "キャラクターパネルをスキャンしてARを解放！",
+        marker: "./assets/markers/marker09.png",
         stamp: null,
         card: "./assets/cards/character09.webp",
         portrait: "./assets/characters/character09.webp",
@@ -144,14 +144,15 @@ export const characters = [
         rotation: 0,
         height: 0,
         shadow: true,
-        free: true
+        free: true, // Excluded from Stamp Rally; requires its panel scan for AR.
+        requiresScan: true
     },
     {
         id: 13,
-        markerIndex: null,
+        markerIndex: 9,
         name: characterNames[13],
-        description: "Free Character",
-        marker: null,
+        description: "キャラクターパネルをスキャンしてARを解放！",
+        marker: "./assets/markers/marker10.png",
         stamp: null,
         card: "./assets/cards/character10.webp",
         portrait: "./assets/characters/character10.webp",
@@ -161,14 +162,15 @@ export const characters = [
         rotation: 0,
         height: 0,
         shadow: true,
-        free: true
+        free: true, // Excluded from Stamp Rally; requires its panel scan for AR.
+        requiresScan: true
     },
     {
         id: 14,
-        markerIndex: null,
+        markerIndex: 10,
         name: characterNames[14],
-        description: "Free Character",
-        marker: null,
+        description: "キャラクターパネルをスキャンしてARを解放！",
+        marker: "./assets/markers/marker11.png",
         stamp: null,
         card: "./assets/cards/character11.webp",
         portrait: "./assets/characters/character11.webp",
@@ -178,6 +180,7 @@ export const characters = [
         rotation: 0,
         height: 0,
         shadow: true,
-        free: true
+        free: true, // Excluded from Stamp Rally; requires its panel scan for AR.
+        requiresScan: true
     }
 ];

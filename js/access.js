@@ -1,7 +1,7 @@
 import { characters } from "./data/characters.js";
 export async function requireAccess(character = null) {
     try {
-        if (character?.free) return;
+        if (character?.free && !character.requiresScan) return;
         const user = await initAnonymousUser();
         const { data, error } = await supabaseClient.from("user_stamps").select("character_id").eq("user_id", user.id);
         if (error) throw error;
@@ -11,7 +11,7 @@ export async function requireAccess(character = null) {
     } catch (error) {
         console.error(error);
         alert("取得状況を確認できませんでした。スタンプラリーをご確認ください。");
-        location.replace("stamp-rally.html");
+        location.replace(character ? "character-list.html" : "stamp-rally.html");
         throw error;
     }
 }

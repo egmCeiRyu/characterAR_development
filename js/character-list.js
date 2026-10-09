@@ -39,7 +39,7 @@ function renderCharacterGrid() {
     characterGrid.innerHTML = "";
 
     characters.forEach(character => {
-        const isFree = character.free === true;
+        const isFree = character.free === true && !character.requiresScan;
         const isCollected =
             isFree ||
             collectedCharacterIds.has(character.id);

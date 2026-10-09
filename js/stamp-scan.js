@@ -18,6 +18,7 @@ const characterScanVoice = document.getElementById("characterScanVoice");
 const characterVoiceButton = document.getElementById("characterVoiceButton");
 
 const scannedCharacters = new Set();
+let lastScannedIsAROnly = false;
 
 // Áudio silencioso (MP3 de ~0.1s, 1 sample) usado só pra "destravar" o
 // elemento <audio> dentro do gesto de clique do usuário. Sem isso,
@@ -109,6 +110,7 @@ function stopCharacterVoice() {
 }
 
 function openCharacterModal(character, alreadyOwned = false) {
+    lastScannedIsAROnly = character.requiresScan === true;
     document.body.classList.add("modal-open");
 
     hideScanOverlays();
@@ -162,7 +164,7 @@ function closeCharacterModal() {
 
     stopCharacterVoice();
 
-    location.href = "stamp-rally.html";
+    location.href = lastScannedIsAROnly ? "character-list.html" : "stamp-rally.html";
 }
 
 async function getCurrentUser() {
@@ -292,7 +294,7 @@ async function startAR() {
         renderer.outputColorSpace = THREE.SRGBColorSpace;
 
         characters
-            .filter(character => !character.free)
+            .filter(character => Number.isInteger(character.markerIndex))
             .forEach(character => {
             const anchor =
                 mindarThree.addAnchor(character.markerIndex);
