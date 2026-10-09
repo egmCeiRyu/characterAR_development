@@ -42,7 +42,7 @@ function log(message) {
     }
 }
 
-function showStampMessage(message) {
+function showStampMessage(message, duration = 900) {
     if (!stampMessage) return;
     if (document.body.classList.contains("modal-open")) return;
 
@@ -51,7 +51,7 @@ function showStampMessage(message) {
 
     setTimeout(() => {
         stampMessage.style.display = "none";
-    }, 900);
+    }, duration);
 }
 
 function hideScanOverlays() {
@@ -209,7 +209,10 @@ async function saveCharacterStamp(character) {
         return true;
     } catch (error) {
         console.error("Stamp save failed:", error);
-        showStampMessage("保存できませんでした。通信を確認して、もう一度スキャンしてください。");
+        const detail = [error.code, error.message, error.details].filter(Boolean).join(" / ");
+        setScanningUI(true);
+        log("保存エラー: " + detail);
+        showStampMessage("保存できませんでした: " + detail, 15000);
         return false;
     }
 }
