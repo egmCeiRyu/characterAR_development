@@ -13,7 +13,7 @@ const backend=(rows,authStatus=200,restStatus=200)=>async(url,opts)=>{
     assert.equal(u.searchParams.get("user_id"),"eq."+user);
     return new Response(JSON.stringify(rows),{status:restStatus});
 };
-for(let i=1;i<=8;i++){
+for(let i=1;i<=11;i++){
     const n=String(i).padStart(2,"0"),id=i+3;
     for(const file of ["/assets/models/character"+n+".glb","/assets/cards/character"+n+".webp","/assets/sounds/voice"+n+".mp3","/assets/sounds/voice"+n+".wav"]){
         assert.equal(protectedCharacter(file),id);
@@ -28,7 +28,6 @@ for(let i=1;i<=8;i++){
         assert.equal(allowed.headers.get("Vary"),"Authorization");
     }
 }
-for(let i=9;i<=11;i++)assert.equal((await serve(req("/assets/models/character"+String(i).padStart(2,"0")+".glb",null),env)).status,200);
 assert.equal((await serve(req("/assets/models/character01.glb"),env,backend([],401))).status,401);
 assert.equal((await serve(req("/assets/models/character01.glb"),env,backend([],200,500))).status,503);
 assert.equal((await serve(req("/assets/models/character01.glb"),env,async()=>{throw Error("offline")})).status,503);
@@ -61,5 +60,5 @@ for(const f of fs.readdirSync("assets/models").filter(f=>f.endsWith(".glb"))){
     for(const item of [...(gltf.buffers||[]),...(gltf.images||[])])
         if(item.uri)assert(item.uri.startsWith("data:"),f+" requires external resource: "+item.uri);
 }
-console.log("PASS: all 8 protected IDs and media types, 3 free IDs, invalid/locked/expired sessions, backend failures, encoded paths, HEAD, private cache, client media cache, JS syntax and self-contained GLB models.");
+console.log("PASS: all 11 protected IDs and media types, invalid/locked/expired sessions, backend failures, encoded paths, HEAD, private cache, client media cache, JS syntax and self-contained GLB models.");
 

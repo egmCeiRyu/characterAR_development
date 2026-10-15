@@ -1,5 +1,5 @@
 export function protectedCharacter(pathname) {
-    const match = /^\/assets\/(?:models\/character(0[1-8])\.glb|cards\/character(0[1-8])\.webp|sounds\/voice(0[1-8])\.(?:mp3|wav))$/.exec(pathname);
+    const match = /^\/assets\/(?:models\/character(0[1-9]|1[01])\.glb|cards\/character(0[1-9]|1[01])\.webp|sounds\/voice(0[1-9]|1[01])\.(?:mp3|wav))$/.exec(pathname);
     return match ? Number(match[1] || match[2] || match[3] || match[4]) + 3 : null;
 }
 const deny = (status, message) => new Response(JSON.stringify({error:message}), {
