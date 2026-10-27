@@ -1009,3 +1009,12 @@ body {
 
     z-index: 5;
 }
+
+/* Usage guidance shown with the frame carousel. */
+.frame-usage-message {
+    margin: 0 52px 12px 2px;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
