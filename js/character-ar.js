@@ -1,7 +1,7 @@
 import { prepareCharacterMedia } from "./protected-media.js";
-import { characters } from "./data/characters.js";
+import { characters } from "./data/characters.js?v=20261027_ar8";
 
-import { requireAccess } from "./access.js";
+import { requireAccess } from "./access.js?v=20261027_ar8";
 AFRAME.registerComponent("character-ar-controller", {
     init: function () {
         this.targetBtn = document.getElementById("targetBtn");

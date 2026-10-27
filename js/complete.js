@@ -1,4 +1,4 @@
-import { requireAccess } from "./access.js";
+import { requireAccess } from "./access.js?v=20261027_ar8";
 document.querySelector("main").hidden = true;
 await requireAccess();
 document.querySelector("main").hidden = false;

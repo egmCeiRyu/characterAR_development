@@ -1,7 +1,7 @@
 import { prepareCharacterMedia } from "./protected-media.js";
 import * as THREE from "three";
 import { MindARThree } from "mindar-image-three";
-import { characters } from "./data/characters.js";
+import { characters } from "./data/characters.js?v=20261027_ar8";
 
 const debugText = document.getElementById("debugText");
 const scanText = document.getElementById("scanText");
@@ -110,7 +110,7 @@ function stopCharacterVoice() {
 }
 
 function openCharacterModal(character, alreadyOwned = false) {
-    lastScannedIsAROnly = character.requiresScan === true;
+    lastScannedIsAROnly = character.arOnly === true;
     document.body.classList.add("modal-open");
 
     hideScanOverlays();
@@ -125,12 +125,14 @@ function openCharacterModal(character, alreadyOwned = false) {
     }
 
     if (modalText) {
-        modalText.textContent = alreadyOwned
-            ? "このキャラクターはすでに取得済みです。"
-            : "キャラクターカードを獲得しました！";
+        modalText.textContent = character.arOnly
+            ? (alreadyOwned ? "このキャラクターのARはすでに解放されています。" : "キャラクターのARを解放しました！")
+            : (alreadyOwned ? "このキャラクターはすでに取得済みです。" : "キャラクターカードを獲得しました！");
     }
 
     if (characterModal) {
+        const badge = characterModal.querySelector(".modal-badge");
+        if (badge) badge.textContent = character.arOnly ? "AR" : "GET";
         characterModal.classList.remove("hidden");
     }
 
@@ -184,6 +186,7 @@ function saveLastScannedCharacter(character) {
     ); } catch (error) { console.warn("Unable to cache last scan:", error); }
 }
 
+// user_stamps also stores scan-based AR entitlements; stampCharacters defines rally credit.
 async function saveCharacterStamp(character) {
     try {
         const user = await getCurrentUser();

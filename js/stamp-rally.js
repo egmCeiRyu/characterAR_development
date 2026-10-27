@@ -1,7 +1,7 @@
-import { characters } from "./data/characters.js";
+import { characters, stampCharacters } from "./data/characters.js?v=20261027_ar8";
 
 const MAX_STAMPS =
-    characters.filter(character => !character.free).length;
+    stampCharacters.length;
 
 let USER_ID = null;
 let confettiPlayed = false;
@@ -39,7 +39,7 @@ async function loadStamps() {
 
     data.forEach(item => {
         const character =
-            characters.find(c => !c.free && c.id === Number(item.character_id));
+            stampCharacters.find(c => c.id === Number(item.character_id));
 
         if (!character) return;
 

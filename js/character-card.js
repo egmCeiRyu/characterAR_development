@@ -1,6 +1,6 @@
 import { prepareCharacterMedia } from "./protected-media.js";
-import { requireAccess } from "./access.js";
-import { characters } from "./data/characters.js";
+import { requireAccess } from "./access.js?v=20261027_ar8";
+import { characters } from "./data/characters.js?v=20261027_ar8";
 
 const characterName = document.getElementById("characterName");
 const characterCardImage = document.getElementById("characterCardImage");

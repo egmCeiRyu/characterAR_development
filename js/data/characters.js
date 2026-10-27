@@ -131,6 +131,8 @@ export const characters = [
     },
     {
         id: 12,
+        arOnly: true,
+        requiresScan: true,
         markerIndex: 8,
         name: characterNames[12],
         description: "キャラクターパネルをスキャンしてARを解放！",
@@ -147,6 +149,8 @@ export const characters = [
     },
     {
         id: 13,
+        arOnly: true,
+        requiresScan: true,
         markerIndex: 9,
         name: characterNames[13],
         description: "キャラクターパネルをスキャンしてARを解放！",
@@ -163,6 +167,8 @@ export const characters = [
     },
     {
         id: 14,
+        arOnly: true,
+        requiresScan: true,
         markerIndex: 10,
         name: characterNames[14],
         description: "キャラクターパネルをスキャンしてARを解放！",
@@ -178,3 +184,6 @@ export const characters = [
         shadow: true
     }
 ];
+
+// AR-only scans persist as unlock records, but never count toward the rally.
+export const stampCharacters = characters.filter(character => !character.free && !character.arOnly);
