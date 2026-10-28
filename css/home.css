@@ -22,10 +22,10 @@ body {
             rgba(255,255,255,.55) 45%,
             rgba(255,255,255,.92) 100%
         ),
-        url("../assets/images/hero-bathhouse.webp");
+        url("../assets/images/hero-main.webp");
 
     background-size: cover;
-    background-position: center top, center -100px;
+    background-position: center top;
     background-repeat: no-repeat;
 
     color: #102044;
