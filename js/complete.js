@@ -4,7 +4,6 @@ await requireAccess();
 document.querySelector("main").hidden = false;
 const completeVoice = document.getElementById("completeVoice");
 const playVoiceButton = document.getElementById("playVoiceButton");
-const rewardButton = document.getElementById("rewardButton");
 
 let autoPlayed = false;
 
@@ -63,13 +62,3 @@ if (playVoiceButton) {
 
 }
 
-// Botão da recompensa
-if (rewardButton) {
-
-    rewardButton.addEventListener("click", () => {
-
-        location.href = "stamp-rally.html?from=complete";
-
-    });
-
-}
