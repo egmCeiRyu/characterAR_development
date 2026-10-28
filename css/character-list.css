@@ -165,8 +165,8 @@ body::after {
     inset: 0;
     z-index: -2;
     pointer-events: none;
-    border-image-source: url("../assets/images/character-ar-background.png");
-    border-image-slice: 804 0 0 0 fill;
+    border-image-source: url("../assets/images/character-ar-riverside.webp");
+    border-image-slice: 900 0 0 0 fill;
     border-image-width: 0;
     border-image-repeat: stretch;
 }
@@ -177,11 +177,11 @@ body::before {
     max-width: 560px;
     margin: 0 auto;
     z-index: -1;
-    background: url("../assets/images/character-ar-background.png") center top / 100% auto no-repeat;
+    background: url("../assets/images/character-ar-riverside.webp") center top / 100% auto no-repeat;
     pointer-events: none;
 }
 .page {
-    padding: min(50vw, 280px) 18px 32px;
+    padding: min(55vw, 308px) 18px 32px;
 }
 .page-header {
     position: absolute;
@@ -203,10 +203,10 @@ body::before {
 }
 #homeButton {
     position: absolute;
-    top: min(4vw, 22.4px);
-    left: calc(50% - min(50vw, 280px) + min(3.8vw, 21.28px));
-    width: min(12.6vw, 70.56px);
-    height: min(12.6vw, 70.56px);
+    top: min(4.7vw, 26.32px);
+    left: calc(50% - min(50vw, 280px) + min(4.7vw, 26.32px));
+    width: min(12vw, 67.2px);
+    height: min(12vw, 67.2px);
     background: transparent;
     border: 0;
     box-shadow: none;
