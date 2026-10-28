@@ -161,7 +161,7 @@ body {
 /* Extend the lower artwork across the viewport without repeating its title. */
 body::after {
     content: "";
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: -2;
     pointer-events: none;

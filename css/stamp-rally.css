@@ -343,7 +343,7 @@ body::before {
 }
 body::after {
     content: "";
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: -2;
     pointer-events: none;
