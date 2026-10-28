@@ -29,7 +29,7 @@ body {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
 }
 
@@ -216,3 +216,15 @@ body::before {
 #homeButton::before { display: none; }
 #homeButton:focus-visible { outline: 3px solid #006bff; outline-offset: 3px; }
 
+
+/* Keep intrinsic portrait widths from expanding the grid columns. */
+.page { width: 100%; }
+.character-grid, .character-card, .character-image-wrap, .character-actions {
+    min-width: 0;
+}
+.character-image-wrap img {
+    position: absolute;
+    inset: 4%;
+    max-width: 92%;
+    min-width: 0;
+}

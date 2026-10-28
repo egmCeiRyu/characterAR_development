@@ -112,3 +112,37 @@ body {
 .close-button:active {
     transform: scale(0.98);
 }
+/* Let the card shrink below the image's intrinsic width on small screens. */
+.card-page { width: 100%; }
+.character-card { min-width: 0; max-width: 100%; }
+.card-header { flex-wrap: wrap; }
+#characterName { min-width: 0; overflow-wrap: anywhere; }
+.card-image-frame { position: relative; min-width: 0; }
+.character-card-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    object-fit: contain;
+}
+@media (max-width: 360px) {
+    .card-page { padding-left: 12px; padding-right: 12px; }
+    .character-card { padding: 14px; }
+}
+
+/* Follow the artwork's native ratio instead of adding side gutters. */
+.card-image-frame {
+    aspect-ratio: auto;
+    border-radius: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+}
+.character-card-image {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+}
