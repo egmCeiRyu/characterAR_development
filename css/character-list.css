@@ -203,36 +203,33 @@ body::before {
     background: rgba(233,249,255,.65);
 }
 #homeButton {
-    position: absolute;
-    z-index: 1000;
-
-    top: 20px;
-    left: calc(50% - min(50vw, 280px) + 14px);
+    position: fixed;
+    top: calc(16px + env(safe-area-inset-top));
+    left: max(16px, calc(50vw - 215px + 16px));
 
     width: 48px;
     height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 0;
+    min-height: 0;
     padding: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: #ffffff;
-    border: 0;
+    background: rgba(255,255,255,.92);
+    color: #006bff;
+    border: 1px solid rgba(0,107,255,.16);
     border-radius: 50%;
-    box-sizing: border-box;
-
-    box-shadow: 0 4px 14px rgba(0, 60, 120, 0.18);
-    cursor: pointer;
-    pointer-events: auto;
+    box-shadow: 0 8px 22px rgba(0,50,130,.18);
+    z-index: 9999;
 }
 
 #homeButton::before {
     display: block;
     width: 23px;
     height: 23px;
+    flex-shrink: 0;
 }
 
 #homeButton:focus-visible {
