@@ -179,108 +179,26 @@ function createFrameCarousel() {
     const previous = document.getElementById("previousFramePage");
     const next = document.getElementById("nextFramePage");
     const label = document.getElementById("framePageNumber");
-
-    const clampPage = index => Math.max(0, Math.min(count - 1, index));
-
-    let activePage = 0;
-    let touchStart = null;
-    let suppressClick = false;
-
+    const current = () => Math.round(frameCarousel.scrollLeft / frameCarousel.clientWidth);
     function updateNavigation() {
-        if (label) label.textContent = `${activePage + 1} / ${count}`;
-        if (previous) previous.disabled = activePage === 0;
-        if (next) next.disabled = activePage === count - 1;
+        const index = current();
+        label.textContent = `${index + 1} / ${count}`;
+        previous.disabled = index === 0;
+        next.disabled = index === count - 1;
     }
-
-    function goToPage(index, behavior = "smooth") {
-        activePage = clampPage(index);
-
-        frameCarousel.scrollTo({
-            left: activePage * frameCarousel.clientWidth,
-            behavior
-        });
-
-        updateNavigation();
-    }
-
     function move(delta) {
-        goToPage(activePage + delta);
+        frameCarousel.scrollTo({left: Math.max(0, Math.min(count - 1, current() + delta)) * frameCarousel.clientWidth, behavior: "smooth"});
     }
-
-    if (previous) previous.addEventListener("click", () => move(-1));
-    if (next) next.addEventListener("click", () => move(1));
-
-    frameCarousel.addEventListener("touchstart", event => {
-        if (event.touches.length !== 1) {
-            touchStart = null;
-            return;
-        }
-
-        touchStart = {
-            x: event.touches[0].clientX,
-            y: event.touches[0].clientY,
-            page: activePage
-        };
-    }, { passive: true });
-
-    frameCarousel.addEventListener("touchend", event => {
-        if (!touchStart || !event.changedTouches.length) return;
-
-        const dx = event.changedTouches[0].clientX - touchStart.x;
-        const dy = event.changedTouches[0].clientY - touchStart.y;
-        const startPage = touchStart.page;
-
-        touchStart = null;
-
-        if (Math.abs(dx) >= 35 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-            suppressClick = true;
-
-            window.setTimeout(() => {
-                suppressClick = false;
-            }, 400);
-
-            goToPage(startPage + (dx < 0 ? 1 : -1));
-        }
-    }, { passive: true });
-
-    frameCarousel.addEventListener("touchcancel", () => {
-        touchStart = null;
-    }, { passive: true });
-
-    frameCarousel.addEventListener("click", event => {
-        if (!suppressClick) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-        suppressClick = false;
-    }, true);
-
-    frameCarousel.addEventListener("scroll", () => {
-        if (
-            !window.matchMedia("(pointer: coarse)").matches &&
-            frameCarousel.clientWidth
-        ) {
-            activePage = clampPage(
-                Math.round(frameCarousel.scrollLeft / frameCarousel.clientWidth)
-            );
-        }
-
-        updateNavigation();
-    }, { passive: true });
-
+    previous.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    frameCarousel.addEventListener("scroll", updateNavigation);
     frameCarousel.addEventListener("keydown", event => {
         if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
             event.preventDefault();
             move(event.key === "ArrowRight" ? 1 : -1);
         }
     });
-
-    if (typeof ResizeObserver !== "undefined") {
-        new ResizeObserver(() => {
-            goToPage(activePage, "auto");
-        }).observe(frameCarousel);
-    }
-
+    new ResizeObserver(updateNavigation).observe(frameCarousel);
     updateNavigation();
 }
 
