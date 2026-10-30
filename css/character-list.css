@@ -209,10 +209,10 @@ body::before {
     top: 20px;
     left: calc(50% - min(50vw, 280px) + 14px);
 
-    width: 50px;
-    height: 50px;
-    min-width: 50px;
-    min-height: 50px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     padding: 0;
 
     display: flex;
@@ -231,8 +231,8 @@ body::before {
 
 #homeButton::before {
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 23px;
+    height: 23px;
 }
 
 #homeButton:focus-visible {
