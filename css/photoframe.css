@@ -922,13 +922,16 @@ body {
     position: fixed !important;
 
     top: calc(16px + env(safe-area-inset-top)) !important;
-    left: calc(16px + env(safe-area-inset-left)) !important;
+    left: max(16px, calc(50vw - 215px + 16px)) !important;
 
     right: auto !important;
     bottom: auto !important;
 
-    width: 48px !important;
-    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    box-sizing: border-box;
 
     margin: 0 !important;
     padding: 0;
