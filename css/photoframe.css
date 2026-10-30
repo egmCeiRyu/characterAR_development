@@ -927,10 +927,11 @@ body {
     right: auto !important;
     bottom: auto !important;
 
-    width: 58px !important;
-    height: 58px !important;
+    width: 48px !important;
+    height: 48px !important;
 
     margin: 0 !important;
+    padding: 0;
     transform: none !important;
 
     z-index: 50 !important;
