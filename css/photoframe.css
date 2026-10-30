@@ -927,6 +927,9 @@ body {
     right: auto !important;
     bottom: auto !important;
 
+    width: 48px !important;
+    height: 48px !important;
+
     min-width: 48px !important;
     min-height: 48px !important;
     max-width: 48px !important;
