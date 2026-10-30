@@ -22,5 +22,5 @@ http.createServer(async(req,res)=>{
         res.writeHead(response.status,Object.fromEntries(response.headers));
         res.end(Buffer.from(await response.arrayBuffer()));
     }catch{res.writeHead(503);res.end("Service unavailable");}
-}).listen(8088,"127.0.0.1",()=>console.log("Secure preview: http://localhost:8088"));
+}).listen(Number(process.env.AR_PREVIEW_PORT || 8088),"127.0.0.1",()=>console.log("Secure preview: http://localhost:8088"));
 

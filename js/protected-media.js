@@ -4,7 +4,7 @@ export async function prepareCharacterMedia(character, fields) {
     if (character.free) return;
     let paths = originalPaths.get(character);
     if (!paths) {
-        paths = {model:character.model, card:character.card, portrait:character.portrait, voice:character.voice};
+        paths = {model:character.model, card:character.card, portrait:character.portrait, voice:character.voice, stamp:character.stamp};
         originalPaths.set(character, paths);
     }
     await initAnonymousUser();
@@ -33,3 +33,10 @@ export async function prepareCharacterMedia(character, fields) {
     fields.forEach((field,index) => { if(urls[index]) character[field]=urls[index]; });
 }
 
+
+// Uses the same authenticated loader; the server checks all eight required stamps.
+const rewardMedia = {card:"./assets/reward/reward.webp", voice:"./assets/sounds/complete.mp3"};
+export async function prepareRewardMedia(fields = ["card", "voice"]) {
+    await prepareCharacterMedia(rewardMedia, fields);
+    return rewardMedia;
+}

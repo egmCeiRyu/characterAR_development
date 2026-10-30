@@ -6,3 +6,5 @@ node_modules/
 .wrangler/
 .env*
 .dev.vars*
+
+_pages-build/

@@ -1,6 +1,10 @@
+import { prepareRewardMedia } from "./protected-media.js";
 import { requireAccess } from "./access.js?v=20261027_ar8";
 document.querySelector("main").hidden = true;
 await requireAccess();
+const reward = await prepareRewardMedia();
+document.getElementById("completeRewardImage").src = reward.card;
+document.getElementById("completeVoice").src = reward.voice;
 document.querySelector("main").hidden = false;
 const completeVoice = document.getElementById("completeVoice");
 const playVoiceButton = document.getElementById("playVoiceButton");

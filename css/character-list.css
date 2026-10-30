@@ -249,3 +249,14 @@ body::before {
     max-width: 92%;
     min-width: 0;
 }
+
+/* Equal card heights across locked and collected characters. */
+.character-grid {
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+}
+.character-actions-placeholder {
+    display: grid;
+    visibility: hidden;
+    pointer-events: none;
+}

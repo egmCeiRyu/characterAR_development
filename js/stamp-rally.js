@@ -1,3 +1,4 @@
+import { prepareCharacterMedia, prepareRewardMedia } from "./protected-media.js";
 import { characters, stampCharacters } from "./data/characters.js?v=20261027_ar8";
 
 const MAX_STAMPS =
@@ -33,8 +34,12 @@ async function loadStamps() {
 
         card.disabled = true;
         card.onclick = null;
+        const image = card.querySelector("img");
+        if (image?.dataset.previewSrc) image.src = image.dataset.previewSrc;
     });
 
+    const rewardPreview = document.querySelector("#rewardBox img");
+    rewardPreview.src = rewardPreview.dataset.previewSrc;
     const unlocked = new Set();
 
     data.forEach(item => {
@@ -60,6 +65,17 @@ async function loadStamps() {
     });
 
     updateStampLevel(unlocked.size);
+    const tasks = stampCharacters.filter(c => unlocked.has(c.id)).map(async character => {
+        await prepareCharacterMedia(character, ["stamp"]);
+        const image = document.querySelector(`.stamp-card[data-character-id="${character.id}"] img`);
+        if (image) image.src = character.stamp;
+    });
+    if (unlocked.size === MAX_STAMPS) tasks.push((async () => {
+        const reward = await prepareRewardMedia(["card"]);
+        document.querySelector("#rewardBox img").src = reward.card;
+    })());
+    const mediaResults = await Promise.allSettled(tasks);
+    mediaResults.forEach(result => { if (result.status === "rejected") console.error(result.reason); });
 
     if (unlocked.size >= MAX_STAMPS && !fromComplete) {
         launchConfetti();

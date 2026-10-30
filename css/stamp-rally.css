@@ -398,3 +398,13 @@ body::after {
 }
 #homeButton::before { display: block; }
 #homeButton:focus-visible { outline: 3px solid #006bff; outline-offset: 3px; }
+
+/* Public placeholders must remain visible over the illustrated background. */
+.stamp-grid .stamp-card.locked {
+    opacity: .85;
+    filter: grayscale(100%);
+}
+
+/* Authorized public low-resolution artwork is shown faded until collection. */
+.stamp-grid .stamp-card.locked { opacity: .55; }
+.stamp-grid .stamp-card.locked[data-character-id="11"] { opacity: .55; }

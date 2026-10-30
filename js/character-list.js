@@ -1,3 +1,4 @@
+import { prepareCharacterMedia } from "./protected-media.js";
 import { characters } from "./data/characters.js?v=20261029_order";
 
 const characterGrid = document.getElementById("characterGrid");
@@ -54,7 +55,7 @@ function renderCharacterGrid() {
 
         card.innerHTML = `
             <div class="character-image-wrap">
-                <img src="${character.portrait}" alt="${character.name}">
+                <img src="${character.arOnly ? `assets/previews/silhouette${String(character.id - 3).padStart(2, "0")}.webp` : character.portrait}" alt="${character.name}">
                 ${isCollected ? "" : `
                         <div class="locked-badge" aria-label="未獲得">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -112,6 +113,11 @@ function renderCharacterGrid() {
         }
 
         characterGrid.appendChild(card);
+        if (isCollected && character.arOnly) {
+            prepareCharacterMedia(character, ["portrait"]).then(() => {
+                card.querySelector(".character-image-wrap img").src = character.portrait;
+            }).catch(error => console.error("Portrait unavailable:", error));
+        }
     });
 }
 
