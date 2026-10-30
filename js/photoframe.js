@@ -140,7 +140,16 @@ function createFrameCarousel() {
 
     frameCarousel.innerHTML = "";
 
-    frames.forEach((frame) => {
+    const pageSize = 6;
+    let page;
+    frames.forEach((frame, index) => {
+        if (index % pageSize === 0) {
+            page = document.createElement("div");
+            page.className = "frame-page";
+            page.setAttribute("role", "group");
+            page.setAttribute("aria-label", `ページ${Math.floor(index / pageSize) + 1}`);
+            frameCarousel.appendChild(page);
+        }
         const button = document.createElement("button");
 
         button.className = "frame-btn";
@@ -164,8 +173,33 @@ function createFrameCarousel() {
             selectFrame(frame, button);
         });
 
-        frameCarousel.appendChild(button);
+        page.appendChild(button);
     });
+    const count = Math.ceil(frames.length / pageSize);
+    const previous = document.getElementById("previousFramePage");
+    const next = document.getElementById("nextFramePage");
+    const label = document.getElementById("framePageNumber");
+    const current = () => Math.round(frameCarousel.scrollLeft / frameCarousel.clientWidth);
+    function updateNavigation() {
+        const index = current();
+        label.textContent = `${index + 1} / ${count}`;
+        previous.disabled = index === 0;
+        next.disabled = index === count - 1;
+    }
+    function move(delta) {
+        frameCarousel.scrollTo({left: Math.max(0, Math.min(count - 1, current() + delta)) * frameCarousel.clientWidth, behavior: "smooth"});
+    }
+    previous.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    frameCarousel.addEventListener("scroll", updateNavigation);
+    frameCarousel.addEventListener("keydown", event => {
+        if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+            event.preventDefault();
+            move(event.key === "ArrowRight" ? 1 : -1);
+        }
+    });
+    new ResizeObserver(updateNavigation).observe(frameCarousel);
+    updateNavigation();
 }
 
 /* =========================

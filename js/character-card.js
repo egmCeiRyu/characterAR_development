@@ -34,18 +34,40 @@ function initCharacterCard() {
     characterCardImage.src = character.card;
     characterCardImage.alt = character.name;
 
-    if (character.voice) characterVoice.src = character.voice;
-    else { voiceButton.disabled = true; voiceButton.textContent = "音声なし"; }
+    if (character.voice) {
+        voiceButton.disabled = true;
+        voiceButton.textContent = "音声を読み込み中…";
+        loadCardVoice();
+    } else {
+        voiceButton.disabled = true;
+        voiceButton.textContent = "音声なし";
+    }
+}
 
-    if (autoplay && character.voice) {
-        setTimeout(() => {
-            playVoice();
-        }, 350);
+let voiceReady = false;
+
+async function loadCardVoice(attempt = 0) {
+    try {
+        await prepareCharacterMedia(character, ["voice"]);
+        characterVoice.src = character.voice;
+        voiceReady = true;
+        voiceButton.disabled = false;
+        voiceButton.textContent = "音声再生";
+        if (autoplay) playVoice();
+    } catch (error) {
+        console.error("Voice download failed:", error);
+        if (attempt < 2) {
+            voiceButton.textContent = "音声を再読み込み中…";
+            setTimeout(() => loadCardVoice(attempt + 1), 1000 * (attempt + 1));
+            return;
+        }
+        voiceButton.disabled = true;
+        voiceButton.textContent = "音声を読み込めませんでした";
     }
 }
 
 function playVoice() {
-    if (!characterVoice || !character?.voice) return;
+    if (!characterVoice || !character?.voice || !voiceReady) return;
 
     characterVoice.pause();
     characterVoice.currentTime = 0;
@@ -74,6 +96,6 @@ closeButton.addEventListener("click", closeCard);
 
 if (character) {
     await requireAccess(character);
-    await prepareCharacterMedia(character, ["card", "voice"]);
+    await prepareCharacterMedia(character, ["card"]);
 }
 initCharacterCard();

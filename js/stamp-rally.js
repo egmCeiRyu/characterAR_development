@@ -99,16 +99,12 @@ function updateStampLevel(total) {
             rewardBox.classList.add("completed");
             completeBox.style.display = "block";
 
-            rewardBox.style.cursor = "pointer";
-            completeBox.style.cursor = "pointer";
+            rewardBox.style.cursor = "default";
+            completeBox.style.cursor = "default";
 
-            rewardBox.onclick = () => {
-                location.href = "complete.html";
-            };
+            rewardBox.onclick = null;
 
-            completeBox.onclick = () => {
-                location.href = "complete.html";
-            };
+            completeBox.onclick = null;
 
         } else {
 

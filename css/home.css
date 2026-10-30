@@ -104,3 +104,9 @@ body {
     pointer-events: none;
     filter: drop-shadow(0 3px 3px rgba(0, 40, 90, .22));
 }
+
+
+/* Reference color treatment on the AR banner only. Character/icon layer stays original. */
+.home-menu-button[href="character-list.html"] .menu-banner {
+    filter: hue-rotate(-6deg) saturate(1.55) brightness(1.11);
+}

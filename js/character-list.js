@@ -1,4 +1,4 @@
-import { characters } from "./data/characters.js?v=20261027_ar8";
+import { characters } from "./data/characters.js?v=20261029_order";
 
 const characterGrid = document.getElementById("characterGrid");
 
@@ -104,7 +104,6 @@ function renderCharacterGrid() {
             const voiceButton =
                 card.querySelector(".voice-button");
 
-            voiceButton.hidden = character.arOnly === true;
             voiceButton.setAttribute("aria-label", `${character.name}のカードを開く`);
             voiceButton.addEventListener("click", () => {
                 location.href =

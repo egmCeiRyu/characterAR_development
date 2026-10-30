@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
 <link rel="stylesheet" href="css/common.css">
-<link rel="stylesheet" href="css/photoframe.css?v=20261027_01">
+<link rel="stylesheet" href="css/photoframe.css?v=20261030_six">
 
 <title>Photo Frame</title>
 </head>
@@ -124,12 +124,17 @@
             フレームを選択してください
         </div>
 
-        <p id="frameUsageMessage" class="frame-usage-message">トリミングされていない画像は、背景として右下のボタンを「前」、トリミングされている画像はフォトフレームとして右下のボタンを「後ろ」に設定してご使用ください。</p>
+        <p id="frameUsageMessage" class="frame-usage-message">フレームを背景として使用される場合は、右下のボタンを（後ろ）に設定してご使用ください。</p>
 
         <div
             id="frameCarousel"
-            class="frame-carousel">
+            class="frame-carousel" tabindex="0" aria-label="フレーム一覧。左右にスワイプできます">
         </div>
+        <nav class="frame-page-navigation" aria-label="フレームのページ切替">
+            <button id="previousFramePage" type="button" aria-label="前のページ">‹</button>
+            <span id="framePageNumber" aria-live="polite"></span>
+            <button id="nextFramePage" type="button" aria-label="次のページ">›</button>
+        </nav>
 
     </section>
 
@@ -180,7 +185,7 @@
     src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js">
 </script>
 
-<script src="js/photoframe.js?v=20261028_91"></script>
+<script src="js/photoframe.js?v=20261030_six"></script>
 
 <!-- Cloudflare Web Analytics -->
 <script
