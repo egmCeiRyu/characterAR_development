@@ -1122,11 +1122,3 @@ body {
     .frame-page-navigation button { height: 32px; width: 44px; font-size: 24px; }
 }
 
-/* One page per swipe on touchscreens */
-@media (pointer: coarse) {
-    .frame-carousel {
-        overflow-x: hidden;
-        touch-action: pan-y;
-        overscroll-behavior-x: contain;
-    }
-}
