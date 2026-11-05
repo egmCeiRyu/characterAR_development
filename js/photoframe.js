@@ -66,6 +66,7 @@ const personMaskContext = personMaskCanvas.getContext(
 
 let currentStream = null;
 let cameraStarting = false;
+let nativeShareOpen = false;
 let cameraSwitching = false;
 let captureInProgress = false;
 
@@ -471,19 +472,54 @@ function updateFrameLayerToggle() {
         isBehind ? "後ろ" : "前";
 }
 
-async function handleVisibilityChange() {
-    if (document.visibilityState !== "visible") {
+function handleVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+        suspendCameraPreview();
         return;
     }
 
-    if (!currentStream && !cameraStarting) {
-        await startCamera();
+    return resumeCameraPreview();
+}
+
+function handlePageShow() {
+    return resumeCameraPreview();
+}
+
+function suspendCameraPreview() {
+    stopLivePreview();
+    if (segmentationReject) {
+        releaseSegmentation();
     }
 }
 
-async function handlePageShow() {
-    if (!currentStream && !cameraStarting) {
+async function resumeCameraPreview() {
+    if (nativeShareOpen || document.visibilityState === "hidden" ||
+        cameraStarting || cameraSwitching) {
+        return;
+    }
+
+    const stream = currentStream;
+    if (!stream || !stream.getVideoTracks().some(track => track.readyState === "live")) {
         await startCamera();
+        return;
+    }
+
+    try {
+        if (cameraVideo.paused) {
+            await cameraVideo.play();
+        }
+    } catch (error) {
+        if (stream === currentStream && document.visibilityState === "visible" && !nativeShareOpen) {
+            await startCamera();
+        }
+        return;
+    }
+
+    if (stream === currentStream && document.visibilityState === "visible" && !nativeShareOpen) {
+        if (!selfieSegmentation) {
+            initializeSelfieSegmentation();
+        }
+        startLivePreview();
     }
 }
 
@@ -581,6 +617,9 @@ async function startCamera() {
         await waitForVideoReady(cameraVideo);
 
         updateCameraMirror();
+        if (!selfieSegmentation) {
+            initializeSelfieSegmentation();
+        }
 
         startLivePreview();
 
@@ -855,9 +894,12 @@ function initializeSelfieSegmentation() {
         selfieMode: false
     });
 
-    selfieSegmentation.onResults(
-        handleSegmentationResults
-    );
+    const instance = selfieSegmentation;
+    instance.onResults(results => {
+        if (instance === selfieSegmentation) {
+            handleSegmentationResults(results);
+        }
+    });
 
     segmentationReady = true;
 }
@@ -915,11 +957,15 @@ function segmentCurrentCameraFrame() {
                 );
             }, 12000);
 
-        selfieSegmentation
+        const instance = selfieSegmentation;
+        instance
             .send({
                 image: cameraVideo
             })
             .catch((error) => {
+                if (instance !== selfieSegmentation || segmentationReject !== reject) {
+                    return;
+                }
                 if (segmentationTimeout) {
                     window.clearTimeout(
                         segmentationTimeout
@@ -1328,6 +1374,8 @@ async function savePhoto() {
                 files: [file]
             })
         ) {
+            nativeShareOpen = true;
+            suspendCameraPreview();
             await navigator.share({
                 files: [file],
                 title: "フォトフレーム"
@@ -1352,6 +1400,8 @@ async function savePhoto() {
         downloadImage(capturedPhotoBlob);
         saveCompleted = true;
     } finally {
+        const resumeAfterShare = nativeShareOpen;
+        nativeShareOpen = false;
         if (saveCompleted) {
             retakePhoto();
             revokePreviewObjectUrl();
@@ -1359,6 +1409,9 @@ async function savePhoto() {
         }
         if (saveBtn) {
             saveBtn.disabled = false;
+        }
+        if (resumeAfterShare) {
+            void resumeCameraPreview();
         }
     }
 }
@@ -1461,29 +1514,31 @@ function revokePreviewObjectUrl() {
     previewObjectUrl = null;
 }
 
-function cleanup() {
-    stopCamera();
-
-    revokePreviewObjectUrl();
-
-    if (segmentationTimeout) {
-        clearTimeout(segmentationTimeout);
-        segmentationTimeout = null;
-    }
-
-    segmentationResolve = null;
-    segmentationReject = null;
-
-    if (
-        selfieSegmentation &&
-        typeof selfieSegmentation.close === "function"
-    ) {
-        selfieSegmentation.close();
-    }
-
+function releaseSegmentation() {
+    const instance = selfieSegmentation;
     selfieSegmentation = null;
     segmentationReady = false;
 
+    clearTimeout(segmentationTimeout);
+    segmentationTimeout = null;
+    const reject = segmentationReject;
+    segmentationResolve = null;
+    segmentationReject = null;
+    if (reject) {
+        reject(new Error("Live preview suspended"));
+    }
+
+    if (instance && typeof instance.close === "function") {
+        Promise.resolve().then(() => instance.close()).catch(error => {
+            console.warn("Could not close segmentation:", error);
+        });
+    }
+}
+
+function cleanup() {
+    stopCamera();
+    revokePreviewObjectUrl();
+    releaseSegmentation();
     capturedPhotoBlob = null;
 }
 
@@ -1516,6 +1571,8 @@ async function waitForLivePreviewFrame() {
 function startLivePreview() {
     if (
         livePreviewRunning ||
+        nativeShareOpen ||
+        document.visibilityState === "hidden" ||
         !livePreviewCanvas ||
         !livePreviewContext
     ) {
@@ -1581,9 +1638,11 @@ async function renderLivePreview() {
 
     try {
         await livePreviewFramePromise;
-        latestPreviewReady = true;
+        latestPreviewReady = generation === livePreviewGeneration;
     } catch (error) {
-        console.warn("Live preview error:", error);
+        if (generation === livePreviewGeneration) {
+            console.warn("Live preview error:", error);
+        }
     } finally {
         livePreviewProcessing = false;
 
@@ -1666,4 +1725,5 @@ async function composeLivePreviewFrame(generation) {
         drawTransformedFrame(livePreviewContext);
     }
 }
+
 
