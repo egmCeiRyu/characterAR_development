@@ -100,6 +100,120 @@ const frames = Array.from(
     }
 );
 
+// Frame-only transform in 1920x1080 composition coordinates.
+var frameTransform = { x: 0, y: 0, scale: 1 };
+var framePointers = new Map();
+var frameGesture = null;
+
+function resetFrameTransform() {
+    frameTransform = { x: 0, y: 0, scale: 1 };
+    if (framePointers) framePointers.clear();
+    frameGesture = null;
+    requestLivePreviewRefresh();
+}
+
+
+function constrainFrameTransform() {
+    const scale = Math.max(1, Math.min(4, frameTransform.scale));
+    if (scale <= 1 + 1e-9) {
+        frameTransform = { x: 0, y: 0, scale: 1 };
+        return;
+    }
+    // Keep the scaled original frame covering the fixed camera rectangle.
+    const maxX = FRAME_WIDTH * (scale - 1) / 2;
+    const maxY = FRAME_HEIGHT * (scale - 1) / 2;
+    frameTransform = {
+        scale,
+        x: Math.max(-maxX, Math.min(maxX, frameTransform.x)),
+        y: Math.max(-maxY, Math.min(maxY, frameTransform.y))
+    };
+}
+
+function drawTransformedFrame(ctx) {
+    ctx.save();
+    ctx.translate(FRAME_WIDTH / 2 + frameTransform.x,
+        FRAME_HEIGHT / 2 + frameTransform.y);
+    ctx.scale(frameTransform.scale, frameTransform.scale);
+    ctx.translate(-FRAME_WIDTH / 2, -FRAME_HEIGHT / 2);
+    drawCover(ctx, selectedBackgroundImage, FRAME_WIDTH, FRAME_HEIGHT);
+    ctx.restore();
+}
+
+function frameGestureSnapshot() {
+    const points = Array.from(framePointers.values()).slice(0, 2);
+    if (!points.length) { frameGesture = null; return; }
+    const center = points.length === 1 ? points[0] : {
+        x: (points[0].x + points[1].x) / 2,
+        y: (points[0].y + points[1].y) / 2
+    };
+    frameGesture = {
+        center,
+        distance: points.length === 2
+            ? Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)
+            : 0,
+        transform: { ...frameTransform }
+    };
+}
+
+function bindFrameGestures() {
+    if (!livePreviewCanvas) return;
+    const position = event => {
+        const rect = livePreviewCanvas.getBoundingClientRect();
+        return {
+            x: (event.clientX - rect.left) * FRAME_WIDTH / rect.width,
+            y: (event.clientY - rect.top) * FRAME_HEIGHT / rect.height
+        };
+    };
+    livePreviewCanvas.addEventListener("pointerdown", event => {
+        if (!selectedFrameReady || captureInProgress ||
+            !previewArea.classList.contains("hidden") ||
+            (event.pointerType === "mouse" && event.button !== 0)) return;
+        event.preventDefault();
+        livePreviewCanvas.setPointerCapture(event.pointerId);
+        framePointers.set(event.pointerId, position(event));
+        frameGestureSnapshot();
+    });
+    livePreviewCanvas.addEventListener("pointermove", event => {
+        if (!framePointers.has(event.pointerId) || !frameGesture || captureInProgress) return;
+        event.preventDefault();
+        framePointers.set(event.pointerId, position(event));
+        const points = Array.from(framePointers.values()).slice(0, 2);
+        const center = points.length === 1 ? points[0] : {
+            x: (points[0].x + points[1].x) / 2,
+            y: (points[0].y + points[1].y) / 2
+        };
+        const start = frameGesture;
+        const distance = points.length === 2
+            ? Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y) : 0;
+        const scale = start.distance > 0
+            ? Math.max(1, Math.min(4, start.transform.scale * distance / start.distance))
+            : start.transform.scale;
+        const ratio = scale / start.transform.scale;
+        // Keep the point beneath the pinch midpoint anchored while resizing.
+        frameTransform = {
+            scale,
+            x: center.x - FRAME_WIDTH / 2 -
+                (start.center.x - FRAME_WIDTH / 2 - start.transform.x) * ratio,
+            y: center.y - FRAME_HEIGHT / 2 -
+                (start.center.y - FRAME_HEIGHT / 2 - start.transform.y) * ratio
+        };
+        constrainFrameTransform();
+
+        requestLivePreviewRefresh();
+    });
+    const end = event => {
+        if (framePointers.delete(event.pointerId)) frameGestureSnapshot();
+    };
+    livePreviewCanvas.addEventListener("pointerup", end);
+    livePreviewCanvas.addEventListener("pointercancel", end);
+    livePreviewCanvas.addEventListener("lostpointercapture", end);
+    window.addEventListener("resize", () => {
+        framePointers.clear();
+        frameGesture = null;
+    });
+    document.getElementById("resetFrameBtn").addEventListener("click", resetFrameTransform);
+}
+
 initialize();
 
 /* =========================
@@ -109,6 +223,7 @@ initialize();
 async function initialize() {
     createFrameCarousel();
     bindEvents();
+    bindFrameGestures();
     updateFrameLayerToggle();
 
     const instructionsDialog = document.getElementById("instructionsDialog");
@@ -658,6 +773,7 @@ function closeFramePanel() {
 }
 
 async function selectFrame(frame, button) {
+    resetFrameTransform();
     selectedFrame = frame.full;
     selectedFrameReady = false;
     selectedBackgroundImage = null;
@@ -1202,6 +1318,8 @@ async function savePhoto() {
         }
     );
 
+    let saveCompleted = false;
+
     try {
         if (
             navigator.share &&
@@ -1215,10 +1333,12 @@ async function savePhoto() {
                 title: "フォトフレーム"
             });
 
+            saveCompleted = true;
             return;
         }
 
         downloadImage(capturedPhotoBlob);
+        saveCompleted = true;
     } catch (error) {
         if (error.name === "AbortError") {
             return;
@@ -1230,7 +1350,13 @@ async function savePhoto() {
         );
 
         downloadImage(capturedPhotoBlob);
+        saveCompleted = true;
     } finally {
+        if (saveCompleted) {
+            retakePhoto();
+            revokePreviewObjectUrl();
+            closeFramePanel();
+        }
         if (saveBtn) {
             saveBtn.disabled = false;
         }
@@ -1514,13 +1640,7 @@ async function composeLivePreviewFrame(generation) {
 
     if (frameLayerMode === "behind") {
         // Character behind the person.
-        drawCover(
-            livePreviewContext,
-            selectedBackgroundImage,
-            FRAME_WIDTH,
-            FRAME_HEIGHT,
-            false
-        );
+        drawTransformedFrame(livePreviewContext);
 
         createPersonCutout(segmentationResults);
 
@@ -1543,12 +1663,7 @@ async function composeLivePreviewFrame(generation) {
             FRAME_HEIGHT
         );
 
-        drawCover(
-            livePreviewContext,
-            selectedBackgroundImage,
-            FRAME_WIDTH,
-            FRAME_HEIGHT,
-            false
-        );
+        drawTransformedFrame(livePreviewContext);
     }
 }
+
