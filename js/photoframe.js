@@ -1710,5 +1710,3 @@ async function composeLivePreviewFrame(generation) {
         drawTransformedFrame(livePreviewContext);
     }
 }
-
-
