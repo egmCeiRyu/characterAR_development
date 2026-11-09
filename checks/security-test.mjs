@@ -37,6 +37,12 @@ assert.equal((await serve(req("/assets/models/%63haracter01.glb",null),env)).sta
 assert.equal((await serve(req("/assets/models/character01.glb",null,"HEAD"),env)).status,403);
 assert.equal((await serve(req("/home.html",null,"POST"),env)).status,405);
 assert.equal((await serve(req("/home.html",null),env)).status,200);
+for(const path of ["/home","/photoframe","/stamp-rally","/character-list"]) {
+    const response = await serve(req(path,null),env);
+    assert.equal(response.status,200);
+    assert.equal(response.headers.get("Cache-Control"),"no-store");
+}
+assert.equal((await serve(req("/assets//models/character01.glb",null),env)).status,404);
 for(const f of fs.readdirSync("js").filter(f=>f.endsWith(".js"))){
     const source=fs.readFileSync("js/"+f,"utf8");
     if(/^\s*(?:import|export)\b/m.test(source))new vm.SourceTextModule(source);

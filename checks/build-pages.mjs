@@ -4,7 +4,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
-const out=path.join(root,"_pages-build/release");
+const releaseName=process.argv[2] ?? "release";
+if(!/^[a-z0-9-]+$/.test(releaseName)) throw new Error("Invalid Pages release name");
+const out=path.join(root,"_pages-build",releaseName);
 // Fail the build if protected bytes also exist at a public asset URL.
 async function inventory(dir) {
     const files=[];
