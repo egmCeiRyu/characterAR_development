@@ -15,8 +15,9 @@ export async function serve(request, env, fetcher = fetch) {
     const url = new URL(request.url);
     let pathname;
     try { pathname = decodeURIComponent(url.pathname); } catch { return deny(400,"Invalid path"); }
-    if (pathname.includes("\\") || pathname.includes("%") || pathname.split("/").some(p=>p.startsWith("."))) return deny(404,"Not found");
-    const publicRoute = pathname === "/" || /^\/[a-z-]+\.html$/.test(pathname)
+    if (pathname.includes("//") || pathname.includes("\\") || pathname.includes("%") || pathname.split("/").some(p=>p.startsWith("."))) return deny(404,"Not found");
+    const pageRoute = pathname === "/" || /^\/(?:index|home|stamp-rally|stamp-scan|character-list|character-card|character-ar|photoframe|complete)(?:\.html)?$/.test(pathname);
+    const publicRoute = pageRoute
         || /^\/(?:assets|css|js|external)\//.test(pathname);
     if (!publicRoute) return deny(404,"Not found");
     if (pathname.startsWith("/assets/characters/") && !/^\/assets\/characters\/character(0[1-9]|1[01])\.webp$/.test(pathname)) return deny(403,"Unknown portrait");
@@ -57,7 +58,7 @@ export async function serve(request, env, fetcher = fetch) {
         headers.set("Cloudflare-CDN-Cache-Control","no-store");
         headers.delete("Access-Control-Allow-Origin");
     }
-    if (/\.(?:html|js)$/.test(pathname) || pathname === "/") headers.set("Cache-Control","no-store");
+    if (pageRoute || pathname.endsWith(".js")) headers.set("Cache-Control","no-store");
     return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
 }
 export default {fetch(request, env) { return serve(request, env); }};
