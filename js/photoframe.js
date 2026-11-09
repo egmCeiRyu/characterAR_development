@@ -66,7 +66,6 @@ const personMaskContext = personMaskCanvas.getContext(
 
 let currentStream = null;
 let cameraStarting = false;
-let nativeShareOpen = false;
 let cameraSwitching = false;
 let captureInProgress = false;
 
@@ -80,6 +79,8 @@ let orientationTimer = null;
 
 const FRAME_WIDTH = 1920;
 const FRAME_HEIGHT = 1080;
+const MIN_FRAME_SCALE = 0.5;
+const MAX_FRAME_SCALE = 4;
 const LIVE_PREVIEW_FPS = 12;
 const LIVE_PREVIEW_INTERVAL = 1000 / LIVE_PREVIEW_FPS;
 const PERSON_MASK_EXPANSION = 5;
@@ -115,14 +116,10 @@ function resetFrameTransform() {
 
 
 function constrainFrameTransform() {
-    const scale = Math.max(1, Math.min(4, frameTransform.scale));
-    if (scale <= 1 + 1e-9) {
-        frameTransform = { x: 0, y: 0, scale: 1 };
-        return;
-    }
-    // Keep the scaled original frame covering the fixed camera rectangle.
-    const maxX = FRAME_WIDTH * (scale - 1) / 2;
-    const maxY = FRAME_HEIGHT * (scale - 1) / 2;
+    const { scale } = frameTransform;
+    // Keep a smaller frame inside the camera rectangle, or a larger frame covering it.
+    const maxX = FRAME_WIDTH * Math.abs(scale - 1) / 2;
+    const maxY = FRAME_HEIGHT * Math.abs(scale - 1) / 2;
     frameTransform = {
         scale,
         x: Math.max(-maxX, Math.min(maxX, frameTransform.x)),
@@ -136,6 +133,9 @@ function drawTransformedFrame(ctx) {
         FRAME_HEIGHT / 2 + frameTransform.y);
     ctx.scale(frameTransform.scale, frameTransform.scale);
     ctx.translate(-FRAME_WIDTH / 2, -FRAME_HEIGHT / 2);
+    ctx.beginPath();
+    ctx.rect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+    ctx.clip();
     drawCover(ctx, selectedBackgroundImage, FRAME_WIDTH, FRAME_HEIGHT);
     ctx.restore();
 }
@@ -187,7 +187,7 @@ function bindFrameGestures() {
         const distance = points.length === 2
             ? Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y) : 0;
         const scale = start.distance > 0
-            ? Math.max(1, Math.min(4, start.transform.scale * distance / start.distance))
+            ? Math.max(MIN_FRAME_SCALE, Math.min(MAX_FRAME_SCALE, start.transform.scale * distance / start.distance))
             : start.transform.scale;
         const ratio = scale / start.transform.scale;
         // Keep the point beneath the pinch midpoint anchored while resizing.
@@ -472,54 +472,19 @@ function updateFrameLayerToggle() {
         isBehind ? "後ろ" : "前";
 }
 
-function handleVisibilityChange() {
-    if (document.visibilityState === "hidden") {
-        suspendCameraPreview();
+async function handleVisibilityChange() {
+    if (document.visibilityState !== "visible") {
         return;
     }
 
-    return resumeCameraPreview();
-}
-
-function handlePageShow() {
-    return resumeCameraPreview();
-}
-
-function suspendCameraPreview() {
-    stopLivePreview();
-    if (segmentationReject) {
-        releaseSegmentation();
-    }
-}
-
-async function resumeCameraPreview() {
-    if (nativeShareOpen || document.visibilityState === "hidden" ||
-        cameraStarting || cameraSwitching) {
-        return;
-    }
-
-    const stream = currentStream;
-    if (!stream || !stream.getVideoTracks().some(track => track.readyState === "live")) {
+    if (!currentStream && !cameraStarting) {
         await startCamera();
-        return;
     }
+}
 
-    try {
-        if (cameraVideo.paused) {
-            await cameraVideo.play();
-        }
-    } catch (error) {
-        if (stream === currentStream && document.visibilityState === "visible" && !nativeShareOpen) {
-            await startCamera();
-        }
-        return;
-    }
-
-    if (stream === currentStream && document.visibilityState === "visible" && !nativeShareOpen) {
-        if (!selfieSegmentation) {
-            initializeSelfieSegmentation();
-        }
-        startLivePreview();
+async function handlePageShow() {
+    if (!currentStream && !cameraStarting) {
+        await startCamera();
     }
 }
 
@@ -617,9 +582,6 @@ async function startCamera() {
         await waitForVideoReady(cameraVideo);
 
         updateCameraMirror();
-        if (!selfieSegmentation) {
-            initializeSelfieSegmentation();
-        }
 
         startLivePreview();
 
@@ -894,12 +856,9 @@ function initializeSelfieSegmentation() {
         selfieMode: false
     });
 
-    const instance = selfieSegmentation;
-    instance.onResults(results => {
-        if (instance === selfieSegmentation) {
-            handleSegmentationResults(results);
-        }
-    });
+    selfieSegmentation.onResults(
+        handleSegmentationResults
+    );
 
     segmentationReady = true;
 }
@@ -957,15 +916,11 @@ function segmentCurrentCameraFrame() {
                 );
             }, 12000);
 
-        const instance = selfieSegmentation;
-        instance
+        selfieSegmentation
             .send({
                 image: cameraVideo
             })
             .catch((error) => {
-                if (instance !== selfieSegmentation || segmentationReject !== reject) {
-                    return;
-                }
                 if (segmentationTimeout) {
                     window.clearTimeout(
                         segmentationTimeout
@@ -1374,8 +1329,6 @@ async function savePhoto() {
                 files: [file]
             })
         ) {
-            nativeShareOpen = true;
-            suspendCameraPreview();
             await navigator.share({
                 files: [file],
                 title: "フォトフレーム"
@@ -1400,8 +1353,6 @@ async function savePhoto() {
         downloadImage(capturedPhotoBlob);
         saveCompleted = true;
     } finally {
-        const resumeAfterShare = nativeShareOpen;
-        nativeShareOpen = false;
         if (saveCompleted) {
             retakePhoto();
             revokePreviewObjectUrl();
@@ -1409,9 +1360,6 @@ async function savePhoto() {
         }
         if (saveBtn) {
             saveBtn.disabled = false;
-        }
-        if (resumeAfterShare) {
-            void resumeCameraPreview();
         }
     }
 }
@@ -1514,31 +1462,29 @@ function revokePreviewObjectUrl() {
     previewObjectUrl = null;
 }
 
-function releaseSegmentation() {
-    const instance = selfieSegmentation;
+function cleanup() {
+    stopCamera();
+
+    revokePreviewObjectUrl();
+
+    if (segmentationTimeout) {
+        clearTimeout(segmentationTimeout);
+        segmentationTimeout = null;
+    }
+
+    segmentationResolve = null;
+    segmentationReject = null;
+
+    if (
+        selfieSegmentation &&
+        typeof selfieSegmentation.close === "function"
+    ) {
+        selfieSegmentation.close();
+    }
+
     selfieSegmentation = null;
     segmentationReady = false;
 
-    clearTimeout(segmentationTimeout);
-    segmentationTimeout = null;
-    const reject = segmentationReject;
-    segmentationResolve = null;
-    segmentationReject = null;
-    if (reject) {
-        reject(new Error("Live preview suspended"));
-    }
-
-    if (instance && typeof instance.close === "function") {
-        Promise.resolve().then(() => instance.close()).catch(error => {
-            console.warn("Could not close segmentation:", error);
-        });
-    }
-}
-
-function cleanup() {
-    stopCamera();
-    revokePreviewObjectUrl();
-    releaseSegmentation();
     capturedPhotoBlob = null;
 }
 
@@ -1571,8 +1517,6 @@ async function waitForLivePreviewFrame() {
 function startLivePreview() {
     if (
         livePreviewRunning ||
-        nativeShareOpen ||
-        document.visibilityState === "hidden" ||
         !livePreviewCanvas ||
         !livePreviewContext
     ) {
@@ -1638,11 +1582,9 @@ async function renderLivePreview() {
 
     try {
         await livePreviewFramePromise;
-        latestPreviewReady = generation === livePreviewGeneration;
+        latestPreviewReady = true;
     } catch (error) {
-        if (generation === livePreviewGeneration) {
-            console.warn("Live preview error:", error);
-        }
+        console.warn("Live preview error:", error);
     } finally {
         livePreviewProcessing = false;
 
@@ -1725,5 +1667,4 @@ async function composeLivePreviewFrame(generation) {
         drawTransformedFrame(livePreviewContext);
     }
 }
-
 
