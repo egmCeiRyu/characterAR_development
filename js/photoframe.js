@@ -102,6 +102,8 @@ const frames = Array.from(
 );
 
 // Frame-only transform in 1920x1080 composition coordinates.
+const MIN_FRAME_SCALE = 0.5;
+const MAX_FRAME_SCALE = 4;
 var frameTransform = { x: 0, y: 0, scale: 1 };
 var framePointers = new Map();
 var frameGesture = null;
@@ -113,20 +115,6 @@ function resetFrameTransform() {
     requestLivePreviewRefresh();
 }
 
-
-function constrainFrameTransform() {
-    const scale = Math.max(1, Math.min(4, frameTransform.scale));
-    if (scale <= 1 + 1e-9) {
-        frameTransform = { x: frameTransform.x, y: 0, scale: 1 };
-        return;
-    }
-    const maxY = FRAME_HEIGHT * (scale - 1) / 2;
-    frameTransform = {
-        scale,
-        x: frameTransform.x,
-        y: Math.max(-maxY, Math.min(maxY, frameTransform.y))
-    };
-}
 
 function drawTransformedFrame(ctx) {
     ctx.save();
@@ -185,7 +173,7 @@ function bindFrameGestures() {
         const distance = points.length === 2
             ? Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y) : 0;
         const scale = start.distance > 0
-            ? Math.max(1, Math.min(4, start.transform.scale * distance / start.distance))
+            ? Math.max(MIN_FRAME_SCALE, Math.min(MAX_FRAME_SCALE, start.transform.scale * distance / start.distance))
             : start.transform.scale;
         const ratio = scale / start.transform.scale;
         // Keep the point beneath the pinch midpoint anchored while resizing.
@@ -196,7 +184,6 @@ function bindFrameGestures() {
             y: center.y - FRAME_HEIGHT / 2 -
                 (start.center.y - FRAME_HEIGHT / 2 - start.transform.y) * ratio
         };
-        constrainFrameTransform();
 
         requestLivePreviewRefresh();
     });
